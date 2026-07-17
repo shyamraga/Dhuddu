@@ -1677,6 +1677,41 @@ async function sendToTelegram(btnElement) {
 let mfChartInstance = null;
 let currentMfNavData = [];
 
+async function loadTop10Navs() {
+  const codes = [151165, 120586, 118989, 118834, 118778, 150677, 122639, 120334, 119609, 119091];
+  
+  await Promise.all(codes.map(async (code) => {
+    try {
+      const response = await fetch(`https://api.tigzig.com/mf/v1/nav?scheme_code=${code}`);
+      const result = await response.json();
+      if (result && result.data && result.data.length >= 2) {
+        const data = result.data;
+        const latest = data[data.length - 1];
+        const prev = data[data.length - 2];
+        const val = latest.nav;
+        const chg = ((val - prev.nav) / prev.nav) * 100;
+        
+        const valEl = document.getElementById(`nav-val-${code}`);
+        if (valEl) valEl.textContent = `NAV: ₹${val.toFixed(2)}`;
+        
+        const chgEl = document.getElementById(`nav-chg-${code}`);
+        if (chgEl) {
+          chgEl.className = 'change-badge';
+          if (chg >= 0) {
+            chgEl.classList.add('positive');
+            chgEl.innerHTML = `<i class="fa-solid fa-caret-up"></i> +${chg.toFixed(2)}%`;
+          } else {
+            chgEl.classList.add('negative');
+            chgEl.innerHTML = `<i class="fa-solid fa-caret-down"></i> ${chg.toFixed(2)}%`;
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`Failed to load live NAV for code ${code}:`, err);
+    }
+  }));
+}
+
 function initMutualFunds() {
   const searchInput = document.getElementById('mf-search-input');
   if (searchInput) {
@@ -1686,6 +1721,8 @@ function initMutualFunds() {
       }
     });
   }
+  // Load real-time NAV and change percentage for the Top 10 Picks
+  loadTop10Navs();
 }
 
 async function searchMutualFunds() {

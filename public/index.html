@@ -976,103 +976,163 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
               
               <!-- 1. Large Cap Index -->
-              <div class="setup-box" style="background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(151165)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE CAP INDEX</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 151165</span>
+              <div class="setup-box" style="background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(151165)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE CAP INDEX</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 151165</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">360 ONE ELSS Nifty 50 Index Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Low cost index tracking combined with equity tax savings (ELSS).</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">360 ONE ELSS Nifty 50 Index Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Low cost index tracking combined with equity tax savings (ELSS).</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-151165" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-151165" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 2. Large Cap Active -->
-              <div class="setup-box" style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(120586)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE CAP ACTIVE</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 120586</span>
+              <div class="setup-box" style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(120586)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE CAP ACTIVE</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 120586</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">ICICI Prudential Large Cap Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Active bluechip core equity exposure targeting long-term capital growth.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">ICICI Prudential Large Cap Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Active bluechip core equity exposure targeting long-term capital growth.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-120586" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-120586" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 3. Mid Cap Growth -->
-              <div class="setup-box" style="background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(118989)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-amber); background: rgba(245, 158, 11, 0.1); padding: 2px 6px; border-radius: 4px;">MID CAP GROWTH</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118989</span>
+              <div class="setup-box" style="background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(118989)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-amber); background: rgba(245, 158, 11, 0.1); padding: 2px 6px; border-radius: 4px;">MID CAP GROWTH</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118989</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">HDFC Mid Cap Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">High conviction active picking focusing on market leading mid-sized companies.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">HDFC Mid Cap Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">High conviction active picking focusing on market leading mid-sized companies.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-118989" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-118989" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 4. Large & Midcap -->
-              <div class="setup-box" style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(118834)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: #a78bfa; background: rgba(139, 92, 246, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE & MIDCAP</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118834</span>
+              <div class="setup-box" style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(118834)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: #a78bfa; background: rgba(139, 92, 246, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE & MIDCAP</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118834</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Mirae Asset Large & Midcap Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Optimized dual-exposure blending stability of Large Caps with Mid Cap growth.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Mirae Asset Large & Midcap Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Optimized dual-exposure blending stability of Large Caps with Mid Cap growth.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-118834" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-118834" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 5. Small Cap Active -->
-              <div class="setup-box" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(118778)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-red); background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">SMALL CAP ACTIVE</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118778</span>
+              <div class="setup-box" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(118778)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-red); background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">SMALL CAP ACTIVE</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118778</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Nippon India Small Cap Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Highly rated active manager capturing massive alphas in small cap space.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Nippon India Small Cap Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Highly rated active manager capturing massive alphas in small cap space.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-118778" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-118778" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 6. Small Cap Index -->
-              <div class="setup-box" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(150677)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-red); background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">SMALL CAP INDEX</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 150677</span>
+              <div class="setup-box" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(150677)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-red); background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">SMALL CAP INDEX</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 150677</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">SBI Nifty Smallcap 250 Index Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Broadly diversified passive index exposure to 250 emerging small cap firms.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">SBI Nifty Smallcap 250 Index Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Broadly diversified passive index exposure to 250 emerging small cap firms.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-150677" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-150677" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 7. Flexi Cap / Global -->
-              <div class="setup-box" style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(122639)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;">FLEXI CAP / GLOBAL</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 122639</span>
+              <div class="setup-box" style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(122639)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;">FLEXI CAP / GLOBAL</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 122639</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Parag Parikh Flexi Cap Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Dynamic capitalization routing coupled with US tech and multinational holdings.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Parag Parikh Flexi Cap Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Dynamic capitalization routing coupled with US tech and multinational holdings.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-122639" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-122639" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 8. Multi Asset Allocation -->
-              <div class="setup-box" style="background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(120334)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-amber); background: rgba(245, 158, 11, 0.1); padding: 2px 6px; border-radius: 4px;">MULTI ASSET ALLOC</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 120334</span>
+              <div class="setup-box" style="background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(120334)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-amber); background: rgba(245, 158, 11, 0.1); padding: 2px 6px; border-radius: 4px;">MULTI ASSET ALLOC</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 120334</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">ICICI Prudential Multi-Asset Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Active dynamic hedging rotating capital across Equity, Debt, and Gold.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">ICICI Prudential Multi-Asset Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Active dynamic hedging rotating capital across Equity, Debt, and Gold.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-120334" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-120334" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 9. Hybrid Balanced -->
-              <div class="setup-box" style="background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(119609)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.1); padding: 2px 6px; border-radius: 4px;">HYBRID / BALANCED</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 119609</span>
+              <div class="setup-box" style="background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(119609)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.1); padding: 2px 6px; border-radius: 4px;">HYBRID / BALANCED</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 119609</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">SBI Equity Hybrid Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Stable blended performance combining equity gains with defensive bond safety.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">SBI Equity Hybrid Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Stable blended performance combining equity gains with defensive bond safety.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-119609" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-119609" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
               <!-- 10. Liquid / Cash Debt -->
-              <div class="setup-box" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(119091)">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                  <span style="font-size: 9px; font-weight:800; color: var(--text-muted); background: rgba(255, 255, 255, 0.05); padding: 2px 6px; border-radius: 4px;">LIQUID / CASH DEBT</span>
-                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 119091</span>
+              <div class="setup-box" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 165px;" onclick="loadMutualFundDetails(119091)">
+                <div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <span style="font-size: 9px; font-weight:800; color: var(--text-muted); background: rgba(255, 255, 255, 0.05); padding: 2px 6px; border-radius: 4px;">LIQUID / CASH DEBT</span>
+                    <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 119091</span>
+                  </div>
+                  <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">HDFC Liquid Fund</h4>
+                  <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Cash management parking fund offering near-zero capital risk and high liquidity.</p>
                 </div>
-                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">HDFC Liquid Fund</h4>
-                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Cash management parking fund offering near-zero capital risk and high liquidity.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 12px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.06); font-family: var(--font-mono); font-size: 11px;">
+                  <span id="nav-val-119091" style="color: var(--text-secondary); font-weight:700;">NAV: ₹--</span>
+                  <span id="nav-chg-119091" class="change-badge" style="font-size: 10px; padding: 1px 4px;">--</span>
+                </div>
               </div>
 
             </div>
