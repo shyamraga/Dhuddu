@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import sys
 import inspect
 import urllib.request
 import urllib.parse
@@ -494,7 +495,7 @@ async def generate_gold_report_endpoint(request):
 
         # Run gold_analyst.py as a subprocess asynchronously with selected timeframe
         process = await asyncio.create_subprocess_exec(
-            "uv", "run", "python", "gold_analyst.py", "--timeframe", str(timeframe),
+            sys.executable, "gold_analyst.py", "--timeframe", str(timeframe),
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
@@ -513,7 +514,7 @@ async def generate_gold_report_endpoint(request):
 async def generate_scalping_scan_endpoint(request):
     try:
         process = await asyncio.create_subprocess_exec(
-            "uv", "run", "python", "scalping_scanner.py",
+            sys.executable, "scalping_scanner.py",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
