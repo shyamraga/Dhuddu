@@ -423,31 +423,39 @@ def get_options_chain_nasdaq_fallback(symbol: str, expiry: Optional[str] = None)
         pass
 
     # 2. Query Nasdaq
-    nasdaq_url = f"https://api.nasdaq.com/api/quote/{sym}/option-chain?assetclass=stocks&limit=150"
-    if expiry:
-        nasdaq_url += f"&fromdate={expiry}"
-    else:
-        nasdaq_url += "&fromdate=all"
+    raw_data = {}
+    last_err = None
+    for asset_class in ["stocks", "etf", "index"]:
+        nasdaq_url = f"https://api.nasdaq.com/api/quote/{sym}/option-chain?assetclass={asset_class}&limit=150"
+        if expiry:
+            nasdaq_url += f"&fromdate={expiry}"
+        else:
+            nasdaq_url += "&fromdate=all"
 
-    try:
-        req = urllib.request.Request(
-            nasdaq_url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Accept": "application/json, text/plain, */*",
-                "Accept-Language": "en-US,en;q=0.9",
-            }
-        )
-        from tradingview_mcp.core.services.proxy_manager import build_opener_with_proxy
-        opener = build_opener_with_proxy("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-        with opener.open(req, timeout=12) as resp:
-            raw_data = json.loads(resp.read().decode("utf-8"))
-    except Exception as e:
-        return {"symbol": sym, "error": f"Nasdaq fallback failed to connect: {e}"}
+        try:
+            req = urllib.request.Request(
+                nasdaq_url,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Accept": "application/json, text/plain, */*",
+                    "Accept-Language": "en-US,en;q=0.9",
+                }
+            )
+            from tradingview_mcp.core.services.proxy_manager import build_opener_with_proxy
+            opener = build_opener_with_proxy("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            with opener.open(req, timeout=12) as resp:
+                raw_data = json.loads(resp.read().decode("utf-8"))
+                status_code = raw_data.get("status", {}).get("rCode", 200)
+                if status_code == 200 and raw_data.get("data") is not None:
+                    break
+        except Exception as e:
+            last_err = e
+            continue
 
     data_node = raw_data.get("data")
     if not data_node or "table" not in data_node:
-        return {"symbol": sym, "error": f"Nasdaq fallback returned no data for {sym}"}
+        err_msg = f"Nasdaq fallback returned no data for {sym} (last err: {last_err})"
+        return {"symbol": sym, "error": err_msg}
 
     # Extract available expiries
     expiries_list = []
@@ -483,6 +491,7 @@ def get_options_chain_nasdaq_fallback(symbol: str, expiry: Optional[str] = None)
 
         code_raw = drill_url.split('/')[-1]
         code = code_raw.split('--')[-1] if '--' in code_raw else code_raw
+        code = code.lstrip('-')
         if len(code) < 15:
             continue
 
