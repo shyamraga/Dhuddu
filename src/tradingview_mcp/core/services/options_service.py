@@ -162,6 +162,16 @@ def _normalize_contract(c: Dict[str, Any], side: str) -> Dict[str, Any]:
 
 
 def get_options_chain(symbol: str, expiry: Optional[str] = None) -> dict:
+    try:
+        res = _get_options_chain_yahoo(symbol, expiry)
+        if "error" in res:
+            raise ValueError(res["error"])
+        return res
+    except Exception as e:
+        print(f"Yahoo options chain failed: {e}. Attempting Nasdaq fallback...")
+        return get_options_chain_nasdaq_fallback(symbol, expiry)
+
+def _get_options_chain_yahoo(symbol: str, expiry: Optional[str] = None) -> dict:
     """Fetch options chain (calls + puts) for one symbol and one expiry.
 
     Args:
@@ -250,6 +260,21 @@ def get_options_chain(symbol: str, expiry: Optional[str] = None) -> dict:
 
 
 def get_unusual_options_activity(
+    symbol: str,
+    top_n: int = 10,
+    min_volume: int = 100,
+    expiries: int = 4,
+) -> dict:
+    try:
+        res = _get_unusual_options_activity_yahoo(symbol, top_n, min_volume, expiries)
+        if "error" in res:
+            raise ValueError(res["error"])
+        return res
+    except Exception as e:
+        print(f"Yahoo unusual options failed: {e}. Attempting Nasdaq fallback...")
+        return get_unusual_options_activity_nasdaq_fallback(symbol, top_n, min_volume, expiries)
+
+def _get_unusual_options_activity_yahoo(
     symbol: str,
     top_n: int = 10,
     min_volume: int = 100,
@@ -379,4 +404,231 @@ def get_unusual_options_activity(
         },
         "unusual": top,
         "source": "Yahoo Finance",
+    }
+
+
+def get_options_chain_nasdaq_fallback(symbol: str, expiry: Optional[str] = None) -> dict:
+    """Fallback options chain fetch using Nasdaq's unauthenticated REST endpoint."""
+    sym = symbol.strip().upper()
+    
+    # 1. Fetch price from unblocked Yahoo /chart endpoint
+    from tradingview_mcp.core.services.yahoo_finance_service import get_price
+    underlying_price = 0.0
+    underlying_change_pct = 0.0
+    try:
+        price_data = get_price(sym)
+        underlying_price = price_data.get("price") or 0.0
+        underlying_change_pct = price_data.get("change_pct") or 0.0
+    except Exception:
+        pass
+
+    # 2. Query Nasdaq
+    nasdaq_url = f"https://api.nasdaq.com/api/quote/{sym}/option-chain?assetclass=stocks&limit=150"
+    if expiry:
+        nasdaq_url += f"&fromdate={expiry}"
+    else:
+        nasdaq_url += "&fromdate=all"
+
+    try:
+        req = urllib.request.Request(
+            nasdaq_url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.9",
+            }
+        )
+        from tradingview_mcp.core.services.proxy_manager import build_opener_with_proxy
+        opener = build_opener_with_proxy("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        with opener.open(req, timeout=12) as resp:
+            raw_data = json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        return {"symbol": sym, "error": f"Nasdaq fallback failed to connect: {e}"}
+
+    data_node = raw_data.get("data")
+    if not data_node or "table" not in data_node:
+        return {"symbol": sym, "error": f"Nasdaq fallback returned no data for {sym}"}
+
+    # Extract available expiries
+    expiries_list = []
+    try:
+        filters = data_node.get("filterlist", {}).get("fromdate", {}).get("filter", [])
+        expiries_list = sorted(list(set([
+            d for f in filters for d in f.get("value", "").split("|") if "-" in d
+        ])))
+    except Exception:
+        pass
+
+    target_expiry = expiry
+    if not target_expiry and expiries_list:
+        target_expiry = expiries_list[0]
+
+    rows = data_node.get("table", {}).get("rows", []) or []
+    calls = []
+    puts = []
+
+    for r in rows:
+        strike_str = r.get("strike")
+        if not strike_str or strike_str == "--":
+            continue
+
+        try:
+            strike = float(strike_str.replace(",", ""))
+        except ValueError:
+            continue
+
+        drill_url = r.get("drillDownURL") or ""
+        if not drill_url:
+            continue
+
+        code_raw = drill_url.split('/')[-1]
+        code = code_raw.split('--')[-1] if '--' in code_raw else code_raw
+        if len(code) < 15:
+            continue
+
+        yr = "20" + code[0:2]
+        mo = code[2:4]
+        dy = code[4:6]
+        row_expiry = f"{yr}-{mo}-{dy}"
+
+        if target_expiry and row_expiry != target_expiry:
+            continue
+
+        # Calls
+        c_last = r.get("c_Last")
+        if c_last and c_last != "--":
+            c_sym = f"{sym.upper()}{code.upper()}"
+            try:
+                calls.append({
+                    "contract_symbol": c_sym,
+                    "side": "call",
+                    "strike": strike,
+                    "last_price": float(c_last.replace(",", "")),
+                    "bid": float(r.get("c_Bid", "0").replace(",", "")) if r.get("c_Bid") != "--" else 0.0,
+                    "ask": float(r.get("c_Ask", "0").replace(",", "")) if r.get("c_Ask") != "--" else 0.0,
+                    "volume": int(r.get("c_Volume", "0").replace(",", "")) if r.get("c_Volume") != "--" else 0,
+                    "open_interest": int(r.get("c_Openinterest", "0").replace(",", "")) if r.get("c_Openinterest") != "--" else 0,
+                    "implied_volatility": 0.0,
+                    "in_the_money": r.get("c_colour", False),
+                    "expiration": row_expiry,
+                })
+            except Exception:
+                pass
+
+        # Puts
+        p_last = r.get("p_Last")
+        if p_last and p_last != "--":
+            p_code = code[:6] + "p" + code[7:]
+            p_sym = f"{sym.upper()}{p_code.upper()}"
+            try:
+                puts.append({
+                    "contract_symbol": p_sym,
+                    "side": "put",
+                    "strike": strike,
+                    "last_price": float(p_last.replace(",", "")),
+                    "bid": float(r.get("p_Bid", "0").replace(",", "")) if r.get("p_Bid") != "--" else 0.0,
+                    "ask": float(r.get("p_Ask", "0").replace(",", "")) if r.get("p_Ask") != "--" else 0.0,
+                    "volume": int(r.get("p_Volume", "0").replace(",", "")) if r.get("p_Volume") != "--" else 0,
+                    "open_interest": int(r.get("p_Openinterest", "0").replace(",", "")) if r.get("p_Openinterest") != "--" else 0,
+                    "implied_volatility": 0.0,
+                    "in_the_money": r.get("p_colour", False),
+                    "expiration": row_expiry,
+                })
+            except Exception:
+                pass
+
+    return {
+        "symbol": sym,
+        "underlying_price": underlying_price,
+        "underlying_change_pct": underlying_change_pct,
+        "requested_expiry": target_expiry,
+        "available_expiries": expiries_list,
+        "call_count": len(calls),
+        "put_count": len(puts),
+        "calls": calls,
+        "puts": puts,
+        "source": "Nasdaq Fallback"
+    }
+
+
+def get_unusual_options_activity_nasdaq_fallback(
+    symbol: str,
+    top_n: int = 10,
+    min_volume: int = 100,
+    expiries: int = 4,
+) -> dict:
+    """Fallback unusual activity scanner aggregating data over soonest expirations from Nasdaq."""
+    sym = symbol.strip().upper()
+
+    first_chain = get_options_chain_nasdaq_fallback(sym)
+    if "error" in first_chain:
+        return {"symbol": sym, "error": first_chain["error"]}
+
+    expiries_list = first_chain.get("available_expiries", [])
+    if not expiries_list:
+        return {"symbol": sym, "error": "No available expirations found for fallback"}
+
+    target_expiries = expiries_list[:max(1, expiries)]
+    all_contracts = []
+    underlying_price = first_chain.get("underlying_price") or 0.0
+    underlying_change_pct = first_chain.get("underlying_change_pct") or 0.0
+
+    for exp in target_expiries:
+        chain = get_options_chain_nasdaq_fallback(sym, exp)
+        if "error" not in chain:
+            all_contracts.extend(chain.get("calls", []))
+            all_contracts.extend(chain.get("puts", []))
+
+    total_call_vol = 0
+    total_put_vol = 0
+    unusual = []
+
+    for c in all_contracts:
+        vol = c.get("volume", 0)
+        oi = c.get("open_interest", 0)
+        side = c.get("side")
+
+        if side == "call":
+            total_call_vol += vol
+        else:
+            total_put_vol += vol
+
+        if vol >= min_volume:
+            denom = float(oi) if oi > 0 else 1.0
+            ratio = round(float(vol) / denom, 2)
+
+            strike = c.get("strike", 0.0)
+            diff_pct = 0.0
+            if underlying_price > 0:
+                diff_pct = ((strike - underlying_price) / underlying_price) * 100
+            moneyness = f"{diff_pct:+.1f}%"
+
+            unusual.append({
+                "contract_symbol": c.get("contract_symbol"),
+                "strike": strike,
+                "side": side,
+                "expiration": c.get("expiration"),
+                "volume": vol,
+                "open_interest": oi,
+                "v_oi_ratio": ratio,
+                "last_price": c.get("last_price", 0.0),
+                "implied_volatility": c.get("implied_volatility", 0.0),
+                "in_the_money": c.get("in_the_money", False),
+                "strike_vs_spot_pct": moneyness,
+            })
+
+    unusual = sorted(unusual, key=lambda x: x["v_oi_ratio"], reverse=True)[:top_n]
+
+    ratio_vol = 0.0
+    if total_call_vol > 0:
+        ratio_vol = round(total_put_vol / total_call_vol, 2)
+
+    return {
+        "symbol": sym,
+        "underlying_price": underlying_price,
+        "total_call_volume": total_call_vol,
+        "total_put_volume": total_put_vol,
+        "put_call_volume_ratio": ratio_vol,
+        "unusual": unusual,
+        "source": "Nasdaq Fallback"
     }
