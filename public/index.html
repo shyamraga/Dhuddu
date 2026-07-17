@@ -18,16 +18,15 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <!-- Mobile Header -->
+  <!-- Mobile Top Bar (brand only, slim) -->
   <header class="mobile-header">
-    <button class="sidebar-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-    <div class="brand">
-      <i class="fa-solid fa-chart-line brand-icon"></i>
-      <div class="brand-text">
-        <h1 style="font-size: 18px; margin: 0;">Dhuddu</h1>
-      </div>
+    <div class="mobile-header-inner">
+      <i class="fa-solid fa-chart-line brand-icon" style="font-size: 18px;"></i>
+      <span class="mobile-brand-name">Dhuddu <span style="color: var(--text-muted); font-weight: 400; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">Analytics</span></span>
     </div>
-    <div style="width: 36px;"></div> <!-- visual spacer -->
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" aria-label="Open navigation menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
   </header>
 
   <div class="app-container">
@@ -1301,6 +1300,30 @@
       
     </main>
   </div>
+  
+  <!-- Bottom Tab Navigation for Mobile -->
+  <nav class="bottom-tab-bar" id="bottom-tab-bar">
+    <a href="#market-pulse" class="bottom-tab active" data-tab="market-pulse" aria-label="Market Pulse">
+      <i class="fa-solid fa-bolt"></i>
+      <span>Pulse</span>
+    </a>
+    <a href="#scanner" class="bottom-tab" data-tab="scanner" aria-label="Market Scanner">
+      <i class="fa-solid fa-binoculars"></i>
+      <span>Scanner</span>
+    </a>
+    <a href="#deep-analysis" class="bottom-tab" data-tab="deep-analysis" aria-label="Deep Analysis">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Analysis</span>
+    </a>
+    <a href="#options-analysis" class="bottom-tab" data-tab="options-analysis" aria-label="Options">
+      <i class="fa-solid fa-sliders"></i>
+      <span>Options</span>
+    </a>
+    <button class="bottom-tab bottom-tab-more" onclick="toggleSidebar()" aria-label="More tools">
+      <i class="fa-solid fa-grip"></i>
+      <span>More</span>
+    </button>
+  </nav>
   
   <!-- Core Javascript Logic -->
   <script src="/static/app.js"></script>

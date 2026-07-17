@@ -33,33 +33,63 @@ window.toggleSidebar = function() {
   if (overlay) overlay.classList.toggle('active');
 };
 
-// 1. Navigation Controller
-function initNavigation() {
+// Close sidebar drawer helper
+function closeSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar) sidebar.classList.remove('open');
+  if (overlay) overlay.classList.remove('active');
+}
+
+// Unified tab switch function (used by sidebar nav + bottom tab bar)
+function switchTab(tabId) {
   const navItems = document.querySelectorAll('.nav-item');
   const tabContents = document.querySelectorAll('.tab-content');
-  
+  const bottomTabs = document.querySelectorAll('.bottom-tab[data-tab]');
+
+  // Deactivate all
+  navItems.forEach(nav => nav.classList.remove('active'));
+  tabContents.forEach(tab => tab.classList.remove('active'));
+  bottomTabs.forEach(bt => bt.classList.remove('active'));
+
+  // Activate sidebar nav item
+  navItems.forEach(nav => {
+    if (nav.getAttribute('data-tab') === tabId) nav.classList.add('active');
+  });
+
+  // Activate bottom tab
+  bottomTabs.forEach(bt => {
+    if (bt.getAttribute('data-tab') === tabId) bt.classList.add('active');
+  });
+
+  // Activate tab content
+  const targetEl = document.getElementById(tabId);
+  if (targetEl) targetEl.classList.add('active');
+
+  // Close drawer on mobile
+  closeSidebar();
+
+  // Scroll to top on tab switch (mobile UX)
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 1. Navigation Controller
+function initNavigation() {
+  // Sidebar nav items
+  const navItems = document.querySelectorAll('.nav-item');
   navItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
-      
-      // Deactivate all
-      navItems.forEach(nav => nav.classList.remove('active'));
-      tabContents.forEach(tab => tab.classList.remove('active'));
-      
-      // Activate selected
-      item.classList.add('active');
-      const targetTab = item.getAttribute('data-tab');
-      document.getElementById(targetTab).classList.add('active');
+      switchTab(item.getAttribute('data-tab'));
+    });
+  });
 
-      // Close sidebar drawer if open (on mobile/tablet)
-      const sidebar = document.querySelector('.sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      if (sidebar && sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-      }
-      if (overlay && overlay.classList.contains('active')) {
-        overlay.classList.remove('active');
-      }
+  // Bottom tab bar items
+  const bottomTabs = document.querySelectorAll('.bottom-tab[data-tab]');
+  bottomTabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchTab(tab.getAttribute('data-tab'));
     });
   });
 }
