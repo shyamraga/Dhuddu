@@ -142,16 +142,43 @@ async function refreshMarketPulse() {
   
   try {
     // 1. Get Bitcoin Pulse
-    const btcPulse = await callMCPTool('bitcoin_market_pulse');
-    if (btcPulse && btcPulse.bitcoin) {
-      const price = btcPulse.bitcoin.price_usd;
-      const change = btcPulse.bitcoin.change_24h_pct;
-      const volume = btcPulse.bitcoin.volume_24h_usd;
-      const cap = btcPulse.bitcoin.market_cap_usd;
-      
+    let btcPulse = null;
+    try {
+      btcPulse = await callMCPTool('bitcoin_market_pulse');
+    } catch (e) {
+      console.warn("BTC Pulse backend call failed, attempting client-side fallback:", e);
+    }
+
+    let price = null;
+    let change = null;
+    let volume = null;
+    let cap = null;
+
+    if (btcPulse && btcPulse.bitcoin && btcPulse.bitcoin.price_usd !== null) {
+      price = btcPulse.bitcoin.price_usd;
+      change = btcPulse.bitcoin.change_24h_pct || 0;
+      volume = btcPulse.bitcoin.volume_24h_usd || 0;
+      cap = btcPulse.bitcoin.market_cap_usd || 0;
+    } else {
+      // Client-side fallback to Coinbase & Binance (direct from user's residential IP)
+      try {
+        const cbRes = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot");
+        const cbData = await cbRes.json();
+        price = parseFloat(cbData.data.amount);
+        
+        const biRes = await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT");
+        const biData = await biRes.json();
+        change = parseFloat(biData.priceChangePercent);
+        volume = parseFloat(biData.volume) * price;
+        cap = price * 19700000; // Estimated circulating supply
+      } catch (err) {
+        console.error("Client-side BTC fallback failed:", err);
+      }
+    }
+
+    if (price !== null && change !== null) {
       document.getElementById('btc-price').textContent = `$${price.toLocaleString()}`;
       
-
       const changeEl = document.getElementById('btc-change');
       changeEl.className = 'change-badge';
       if (change >= 0) {
@@ -163,11 +190,12 @@ async function refreshMarketPulse() {
       }
       
       const btcVol = document.getElementById('btc-volume');
-      if (btcVol) btcVol.textContent = `$${(volume / 1e9).toFixed(2)}B`;
+      if (btcVol) btcVol.textContent = volume ? `$${(volume / 1e9).toFixed(2)}B` : '--';
       
       const btcCap = document.getElementById('btc-cap');
-      if (btcCap) btcCap.textContent = `$${(cap / 1e9).toFixed(2)}B`;
+      if (btcCap) btcCap.textContent = cap ? `$${(cap / 1e9).toFixed(2)}B` : '--';
     }
+    
     
     // 2. Get Gold (XAUUSD) Price
     const goldData = await callMCPTool('yahoo_price', { symbol: 'GC=F' });
