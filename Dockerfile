@@ -12,7 +12,7 @@ WORKDIR /app
 COPY . .
 
 # Install the package and its dependencies into the system Python
-RUN uv pip install --system .
+RUN uv pip install --system . starlette uvicorn
 
 # ---- Stage 2: Runtime ----
 FROM python:3.11-slim
@@ -31,12 +31,11 @@ RUN useradd -m mcpuser && chown -R mcpuser:mcpuser /app
 USER mcpuser
 
 # Expose the HTTP port
-EXPOSE 8000
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/')" || exit 1
 
-# Run the MCP server over streamable-http (ideal for Docker/remote deployments)
-ENTRYPOINT ["tradingview-mcp"]
-CMD ["streamable-http", "--host", "0.0.0.0", "--port", "8000"]
+# Run the web server
+CMD ["python", "web_server.py"]
