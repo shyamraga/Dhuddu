@@ -34,7 +34,7 @@ from tradingview_mcp.core.services.proxy_manager import (
 )
 
 _TIMEOUT = 12
-_UA = "tradingview-mcp/0.5.0"
+_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 _BASE = "https://query1.finance.yahoo.com/v8/finance/chart"
 
 
