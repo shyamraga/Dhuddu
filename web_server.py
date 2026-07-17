@@ -13,6 +13,9 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 import uvicorn
 
+# Base Directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Import the server functions
 from tradingview_mcp import server
 
@@ -476,10 +479,10 @@ async def execute_tool_endpoint(request):
         }, status_code=500)
 
 async def index_endpoint(request):
-    return FileResponse("public/index.html")
+    return FileResponse(os.path.join(BASE_DIR, "public", "index.html"))
 
 async def gold_endpoint(request):
-    return FileResponse("public/gold.html")
+    return FileResponse(os.path.join(BASE_DIR, "public", "gold.html"))
 
 async def generate_gold_report_endpoint(request):
     try:
@@ -500,7 +503,7 @@ async def generate_gold_report_endpoint(request):
             raise Exception(stderr.decode())
             
         # Load the generated JSON file
-        with open("public/gold_report.json", "r") as f:
+        with open(os.path.join(BASE_DIR, "public", "gold_report.json"), "r") as f:
             report_data = json.load(f)
             
         return JSONResponse({"success": True, "report": report_data})
@@ -519,7 +522,7 @@ async def generate_scalping_scan_endpoint(request):
             raise Exception(stderr.decode())
             
         # Load the generated JSON file
-        with open("public/scalping_report.json", "r") as f:
+        with open(os.path.join(BASE_DIR, "public", "scalping_report.json"), "r") as f:
             report_data = json.load(f)
             
         return JSONResponse({"success": True, "report": report_data})
@@ -537,7 +540,7 @@ routes = [
     Route("/api/send-telegram", send_telegram_endpoint, methods=["POST"]),
     Route("/api/market-news", market_news_endpoint, methods=["GET", "POST"]),
     Route("/api/gemini-analysis", gemini_analysis_endpoint, methods=["POST"]),
-    Mount("/static", app=StaticFiles(directory="public"), name="static")
+    Mount("/static", app=StaticFiles(directory=os.path.join(BASE_DIR, "public")), name="static")
 ]
 
 middleware = [
