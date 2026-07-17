@@ -25,6 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Sidebar Toggle for Mobile Drawer
+window.toggleSidebar = function() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar) sidebar.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('active');
+};
+
 // 1. Navigation Controller
 function initNavigation() {
   const navItems = document.querySelectorAll('.nav-item');
@@ -42,6 +50,16 @@ function initNavigation() {
       item.classList.add('active');
       const targetTab = item.getAttribute('data-tab');
       document.getElementById(targetTab).classList.add('active');
+
+      // Close sidebar drawer if open (on mobile/tablet)
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+      }
+      if (overlay && overlay.classList.contains('active')) {
+        overlay.classList.remove('active');
+      }
     });
   });
 }

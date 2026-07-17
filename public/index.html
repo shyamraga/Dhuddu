@@ -18,6 +18,18 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="brand">
+      <i class="fa-solid fa-chart-line brand-icon"></i>
+      <div class="brand-text">
+        <h1 style="font-size: 18px; margin: 0;">Dhuddu</h1>
+      </div>
+    </div>
+    <div style="width: 36px;"></div> <!-- visual spacer -->
+  </header>
+
   <div class="app-container">
     <!-- Background effects -->
     <div class="bg-glow bg-glow-1"></div>
@@ -72,6 +84,9 @@
         </div>
       </div>
     </aside>
+    
+    <!-- Sidebar Overlay for Mobile Drawer -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
     
     <!-- Main Content Area -->
     <main class="main-content">
