@@ -601,7 +601,7 @@ def get_unusual_options_activity_nasdaq_fallback(
             diff_pct = 0.0
             if underlying_price > 0:
                 diff_pct = ((strike - underlying_price) / underlying_price) * 100
-            moneyness = f"{diff_pct:+.1f}%"
+            moneyness = round(diff_pct, 2)
 
             unusual.append({
                 "contract_symbol": c.get("contract_symbol"),

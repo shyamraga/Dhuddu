@@ -867,7 +867,7 @@ async function fetchOptionsData() {
           <td>${row.expiration}</td>
           <td style="font-family: var(--font-mono); font-size:12px;">${row.volume.toLocaleString()} <span style="color:var(--text-muted); font-size:10px;">/ ${row.open_interest.toLocaleString()}</span></td>
           <td class="positive" style="font-weight: 700; font-family: var(--font-mono);">${row.v_oi_ratio.toFixed(2)}x</td>
-          <td><span class="indicator-val ${moneynessClass}" style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">${moneyness} (${row.strike_vs_spot_pct >= 0 ? '+' : ''}${row.strike_vs_spot_pct.toFixed(1)}%)</span></td>
+          <td><span class="indicator-val ${moneynessClass}" style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">${moneyness} (${(typeof row.strike_vs_spot_pct === 'number' && !isNaN(row.strike_vs_spot_pct)) ? (row.strike_vs_spot_pct >= 0 ? '+' : '') + row.strike_vs_spot_pct.toFixed(1) + '%' : '--'})</span></td>
           <td style="font-family: var(--font-mono); font-weight: 600;">$${row.last_price.toFixed(2)} <span style="color:var(--accent-amber); font-size:10px; margin-left:4px;">(${(row.implied_volatility * 100).toFixed(0)}%)</span></td>
         `;
         unusualTbody.appendChild(tr);
