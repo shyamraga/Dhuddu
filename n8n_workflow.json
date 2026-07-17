@@ -1,0 +1,123 @@
+{
+  "name": "XAUUSD Institutional Analysis Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "cronExpression": "30 23 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "cronExpression": "30 00 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "cronExpression": "30 06 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "cronExpression": "30 07 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "cronExpression": "30 12 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "cronExpression": "30 13 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "2ea7162b-9e48-4cb7-8e6f-cb0179a61b2e",
+      "name": "Market Sessions Scheduler",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8085/api/generate-gold-report",
+        "sendHeaders": true,
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "options": {}
+      },
+      "id": "e4f8d29c-faef-4171-8bc6-9cd59fb4578e",
+      "name": "Trigger Gold Analysis API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        470,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/YOUR_WEBHOOK_URL_HERE",
+        "sendHeaders": true,
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"username\": \"Goldman Sachs Gold Desk\",\n  \"avatar_url\": \"https://i.imgur.com/8QzD2N2.png\",\n  \"embeds\": [\n    {\n      \"title\": \"🚨 LIVE XAUUSD INSTITUTIONAL ANALYSIS REPORT\",\n      \"color\": 16766720,\n      \"description\": \"Goldman Sachs & JP Morgan Institutional Gold Trader Daily Summary Report.\",\n      \"fields\": [\n        {\n          \"name\": \"Final Verdict Recommendation\",\n          \"value\": \"**\" + $json.report.primary_objective.verdict + \"**\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Market Bias Direction\",\n          \"value\": \"**\" + $json.report.primary_objective.bias + \"**\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Success Probability\",\n          \"value\": \"**\" + $json.report.primary_objective.probability + \"**\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Entry Trigger Level\",\n          \"value\": \"**$\" + $json.report.primary_objective.entry + \"**\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Stop Loss Price\",\n          \"value\": \"**$\" + $json.report.primary_objective.sl + \"**\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Risk:Reward Ratio\",\n          \"value\": \"**\" + $json.report.primary_objective.reward_ratio + \"**\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Gold Current Price\",\n          \"value\": \"**$\" + $json.report.part_6_fundamental_analysis.yields_dxy.split(' ')[0] + \"**\",\n          \"inline\": false\n        },\n        {\n          \"name\": \"Invalidation Level\",\n          \"value\": \"**$\" + $json.report.part_13_invalidation.price + \"**\",\n          \"inline\": true\n        },\n        {\n          \"name\": \"Key Institutional Focus\",\n          \"value\": $json.report.part_14_final_verdict.summary,\n          \"inline\": false\n        }\n      ],\n      \"footer\": {\n        \"text\": \"Generated at: \" + $json.report.timestamp\n      }\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "e4f8d29c-faef-4171-8bc6-9cd59fb4578f",
+      "name": "Discord Webhook Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        690,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "Market Sessions Scheduler": {
+      "main": [
+        [
+          {
+            "node": "Trigger Gold Analysis API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Gold Analysis API": {
+      "main": [
+        [
+          {
+            "node": "Discord Webhook Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateId": "xauusd-mcp-dashboard-sync"
+  }
+}

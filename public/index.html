@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dhuddu Analytics Dashboard</title>
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js for Equity Curves & Performance Visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- TradingView Widget Library -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Background effects -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+    
+    <!-- Sidebar Navigation Capsule -->
+    <aside class="sidebar">
+      <div class="brand">
+        <i class="fa-solid fa-chart-line brand-icon"></i>
+        <div class="brand-text">
+          <h1>Dhuddu</h1>
+          <span>Analytics</span>
+        </div>
+      </div>
+      
+      <nav class="navigation">
+        <a href="#market-pulse" class="nav-item active" data-tab="market-pulse">
+          <i class="fa-solid fa-bolt"></i>
+          <span>Market Pulse</span>
+        </a>
+        <a href="#scanner" class="nav-item" data-tab="scanner">
+          <i class="fa-solid fa-binoculars"></i>
+          <span>Market Scanner</span>
+        </a>
+        <a href="#deep-analysis" class="nav-item" data-tab="deep-analysis">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Deep Analysis</span>
+        </a>
+        <a href="#options-analysis" class="nav-item" data-tab="options-analysis">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Options Analysis</span>
+        </a>
+        <a href="#scalping-scanner" class="nav-item" data-tab="scalping-scanner">
+          <i class="fa-solid fa-bolt"></i>
+          <span>Scalping Scanner</span>
+        </a>
+        <a href="#gold-analyst" class="nav-item" data-tab="gold-analyst">
+          <i class="fa-solid fa-coins"></i>
+          <span>Gold Analyst</span>
+        </a>
+        <a href="#mutual-funds" class="nav-item" data-tab="mutual-funds">
+          <i class="fa-solid fa-piggy-bank"></i>
+          <span>Mutual Funds</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <div class="pulse-dot"></div>
+          <span id="sync-status">Connected to MCP</span>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Tab 1: Market Pulse -->
+      <section id="market-pulse" class="tab-content active">
+        <!-- Hero Section -->
+        <div class="pulse-hero glass-card" style="margin-bottom: 24px; padding: 40px; border-radius: 20px; background: #020617; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+          
+          <!-- Animated Background Elements -->
+          <div style="position: absolute; top: -50%; left: -20%; width: 140%; height: 200%; background: radial-gradient(circle at 30% 50%, rgba(37, 99, 235, 0.15) 0%, transparent 50%); animation: float-slow 15s ease-in-out infinite alternate;"></div>
+          <div style="position: absolute; bottom: -40%; right: -20%; width: 120%; height: 180%; background: radial-gradient(circle at 70% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 50%); animation: float-slow-reverse 12s ease-in-out infinite alternate;"></div>
+          
+          <!-- Overlay Pattern (Grid) -->
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; opacity: 0.5; pointer-events: none;"></div>
+
+          <!-- Content -->
+          <div style="position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;">
+            <div style="max-width: 60%;">
+              <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 30px; margin-bottom: 16px;">
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 10px #22C55E; animation: blink 2s infinite;"></div>
+                <span style="color: #4ADE80; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">SYSTEMS ONLINE</span>
+              </div>
+              <h1 style="font-size: 42px; margin-bottom: 16px; font-weight: 800; background: linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1px; line-height: 1.1;">Global Market Pulse</h1>
+              <p style="color: #94A3B8; font-size: 16px; max-width: 500px; margin-bottom: 0; line-height: 1.6;">
+                Real-time institutional prices, daily variations, and sentiment metrics. Access powerful tools to navigate market volatility and identify emerging trends.
+              </p>
+            </div>
+            
+            <!-- Hero Graphic (Abstract Chart) -->
+            <div style="display: flex; gap: 8px; align-items: flex-end; height: 80px; opacity: 0.8;">
+              <div style="width: 12px; height: 30%; background: linear-gradient(to top, rgba(59, 130, 246, 0.2), #3B82F6); border-radius: 4px; animation: bar-bounce 2s infinite ease-in-out;"></div>
+              <div style="width: 12px; height: 50%; background: linear-gradient(to top, rgba(59, 130, 246, 0.2), #3B82F6); border-radius: 4px; animation: bar-bounce 2.2s infinite ease-in-out 0.2s;"></div>
+              <div style="width: 12px; height: 80%; background: linear-gradient(to top, rgba(139, 92, 246, 0.2), #8B5CF6); border-radius: 4px; animation: bar-bounce 2.5s infinite ease-in-out 0.4s;"></div>
+              <div style="width: 12px; height: 40%; background: linear-gradient(to top, rgba(59, 130, 246, 0.2), #3B82F6); border-radius: 4px; animation: bar-bounce 2.1s infinite ease-in-out 0.6s;"></div>
+              <div style="width: 12px; height: 100%; background: linear-gradient(to top, rgba(34, 197, 94, 0.2), #22C55E); border-radius: 4px; animation: bar-bounce 2.3s infinite ease-in-out 0.8s; box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);"></div>
+            </div>
+          </div>
+          
+          <!-- Inject Keyframes directly into the hero so it works cleanly -->
+          <style>
+            @keyframes float-slow {
+              0% { transform: translate(0, 0) scale(1); }
+              100% { transform: translate(50px, 30px) scale(1.1); }
+            }
+            @keyframes float-slow-reverse {
+              0% { transform: translate(0, 0) scale(1.1); }
+              100% { transform: translate(-40px, -40px) scale(1); }
+            }
+            @keyframes bar-bounce {
+              0%, 100% { transform: scaleY(0.8); transform-origin: bottom; }
+              50% { transform: scaleY(1.1); transform-origin: bottom; }
+            }
+            @keyframes blink {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.4; }
+            }
+          </style>
+        </div>
+        
+        <!-- Live Market Tickers -->
+        <h3 style="margin-bottom: 16px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Live Tickers</h3>
+        <div class="grid-layout cols-3" style="margin-bottom: 32px;">
+          <!-- Card 1: Bitcoin -->
+          <div class="card glass-card ticker-card" style="transition: transform 0.3s; cursor: default;">
+            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+              <h3 style="display: flex; align-items: center; gap: 8px;"><i class="fa-brands fa-bitcoin" style="color: #F7931A;"></i> Bitcoin</h3>
+              <span class="badge" id="btc-change-icon">-</span>
+            </div>
+            <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div><span style="font-size: 11px; color: var(--text-muted);">Last Price</span><div id="btc-price" style="font-weight: 600; font-size: 16px;">-</div></div>
+              <div><span style="font-size: 11px; color: var(--text-muted);">Daily Change</span><div id="btc-change" style="font-weight: 600; font-size: 16px;">-</div></div>
+            </div>
+          </div>
+          
+          <!-- Card 2: Gold -->
+          <div class="card glass-card ticker-card" style="transition: transform 0.3s; cursor: default;">
+            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+              <h3 style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-coins" style="color: #FFD700;"></i> Gold (XAUUSD)</h3>
+              <span class="badge" id="gold-change-icon">-</span>
+            </div>
+            <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div><span style="font-size: 11px; color: var(--text-muted);">Last Price</span><div id="gold-pulse-price" style="font-weight: 600; font-size: 16px;">-</div></div>
+              <div><span style="font-size: 11px; color: var(--text-muted);">Daily Change</span><div id="gold-pulse-change" style="font-weight: 600; font-size: 16px;">-</div></div>
+            </div>
+          </div>
+          
+          <!-- Card 3: US Dollar Index -->
+          <div class="card glass-card ticker-card" style="transition: transform 0.3s; cursor: default;">
+            <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+              <h3 style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-dollar-sign" style="color: #85bb65;"></i> DXY</h3>
+              <span class="badge" id="dxy-change-icon">-</span>
+            </div>
+            <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div><span style="font-size: 11px; color: var(--text-muted);">Last Price</span><div id="dxy-pulse-price" style="font-weight: 600; font-size: 16px;">-</div></div>
+              <div><span style="font-size: 11px; color: var(--text-muted);">Daily Change</span><div id="dxy-pulse-change" style="font-weight: 600; font-size: 16px;">-</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial News Section -->
+        <h3 style="margin-bottom: 16px; font-size: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;">
+          <span>Important Market News</span>
+          <button onclick="fetchMarketNews()" style="background:none; border:none; color: var(--accent-blue); cursor: pointer; font-size: 12px;"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+        </h3>
+        <div id="news-container" class="grid-layout cols-2" style="gap: 16px;">
+          <!-- News cards injected via JS -->
+          <div class="card glass-card" style="padding: 24px; text-align: center; grid-column: span 2; color: var(--text-muted);">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> Loading latest global market news...
+          </div>
+        </div>
+      </section>
+      
+      <!-- Tab 2: Market Scanner -->
+      <section id="scanner" class="tab-content">
+        <header class="content-header">
+          <h2>Technical Scanner</h2>
+          <p>Scans the markets in real-time for breakouts, volume anomalies, and Bollinger Band compressions.</p>
+        </header>
+        
+        <div class="analysis-controls">
+          <div class="control-group">
+            <label for="scanner-type">Scanner Mode</label>
+            <select id="scanner-type">
+              <option value="bollinger_scan" selected>Bollinger Band Compression</option>
+              <option value="volume_breakout_scanner">Volume Breakout Scanner</option>
+              <option value="top_gainers">Top Gainers</option>
+              <option value="top_losers">Top Losers</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="scanner-exchange">Exchange</label>
+            <select id="scanner-exchange">
+              <option value="BINANCE" selected>Binance (Crypto)</option>
+              <option value="NASDAQ">NASDAQ (Stocks)</option>
+              <option value="NYSE">NYSE (Stocks)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="scanner-timeframe">Timeframe</label>
+            <select id="scanner-timeframe">
+              <option value="5m">5m</option>
+              <option value="15m">15m</option>
+              <option value="1h" selected>1h</option>
+              <option value="4h">4h</option>
+              <option value="1D">1D</option>
+            </select>
+          </div>
+          <button class="primary-btn" id="run-scan-btn"><i class="fa-solid fa-magnifying-glass"></i> Run Scan</button>
+        </div>
+        
+        <div class="card glass-card">
+          <div class="card-header">
+            <h3 id="scan-results-title"><i class="fa-solid fa-list"></i> Scan Results</h3>
+            <span class="badge warning" id="scan-results-count">0 symbols found</span>
+          </div>
+          <div class="card-body loading-parent" style="padding:0;">
+            <div class="progress-bar-container" id="scanner-progress-container" style="display: none; padding: 20px; border-bottom: 1px solid var(--border-color);">
+              <div class="progress-bar-label" style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary)">Scanning markets... <span id="scanner-progress-text">0%</span></div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" id="scanner-progress-bar" style="width: 0%;"></div></div>
+            </div>
+            <div class="table-container">
+              <table id="scanner-table">
+                <thead>
+                  <tr>
+                    <th>Symbol</th>
+                    <th>Price</th>
+                    <th>Change</th>
+                    <th>Volume</th>
+                    <th>Trigger Signal</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="scanner-tbody">
+                  <tr>
+                    <td colspan="6" style="text-align:center; padding:40px; color:var(--text-secondary)">Select scan parameters above and click "Run Scan".</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Tab 3: Deep Analysis -->
+      <section id="deep-analysis" class="tab-content">
+        <header class="content-header">
+          <h2>Symbol Deep Analysis</h2>
+          <p>Get a comprehensive analytical breakdown of any specific ticker symbol including multi-timeframe indicators, news, and sentiment.</p>
+        </header>
+        
+        <div class="analysis-controls">
+          <div class="control-group search-group">
+            <label for="analysis-symbol">Ticker Symbol</label>
+            <div class="search-input-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="analysis-symbol" placeholder="e.g. BTCUSDT, AAPL, MSFT" value="BTCUSDT">
+            </div>
+          </div>
+          <div class="control-group">
+            <label for="analysis-exchange">Default Exchange</label>
+            <select id="analysis-exchange">
+              <option value="BINANCE" selected>Binance</option>
+              <option value="KUCOIN">KuCoin</option>
+              <option value="NASDAQ">NASDAQ</option>
+              <option value="NYSE">NYSE</option>
+              <option value="EGX">EGX</option>
+            </select>
+          </div>
+          <button class="primary-btn" id="run-analysis-btn"><i class="fa-solid fa-brain"></i> Generate Report</button>
+        </div>
+        
+        <!-- Deep Analysis Results Grid -->
+        <div class="grid-layout cols-2 margin-top" id="analysis-grid" style="display: none;">
+          <!-- Progress Bar Container -->
+          <div class="progress-bar-container col-span-2" id="analysis-progress-container" style="display: none; padding: 20px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 10px;">
+            <div class="progress-bar-label" style="font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-secondary)">Generating deep report... <span id="analysis-progress-text">0%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="analysis-progress-bar" style="width: 0%;"></div></div>
+          </div>
+
+          <!-- Interactive TradingView Chart Card -->
+          <div class="card glass-card col-span-2">
+            <div class="card-header">
+              <h3 id="analysis-chart-title"><i class="fa-solid fa-chart-line"></i> Ticker Live Interactive Chart</h3>
+            </div>
+            <div class="card-body" style="padding:0; height:450px; background:rgba(0,0,0,0.2);">
+              <div id="tradingview_analysis_chart" style="width:100%; height:100%;"></div>
+            </div>
+          </div>
+
+          <!-- Left: Combined Technical Metrics -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-calculator"></i> Combined Technical Indicators</h3>
+            </div>
+            <div class="card-body loading-parent" id="tech-metrics-body">
+              <div class="loader"></div>
+            </div>
+          </div>
+          
+          <!-- Right: Sentiment & News Summary -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-newspaper"></i> Sentiment & Related News</h3>
+            </div>
+            <div class="card-body loading-parent" id="sentiment-news-body">
+              <div class="loader"></div>
+            </div>
+          </div>
+          
+          <!-- Multi-Timeframe Matrix (Full-width) -->
+          <div class="card glass-card col-span-2">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-table-cells-large"></i> Multi-Timeframe Trend Matrix</h3>
+            </div>
+            <div class="card-body loading-parent" id="mtf-matrix-body">
+              <div class="loader"></div>
+            </div>
+          </div>
+          
+          <!-- Gemini AI Synthesis (Full-width) -->
+          <div class="card glass-card col-span-2" style="border: 1px solid rgba(139, 92, 246, 0.3); background: linear-gradient(145deg, rgba(30, 27, 75, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);">
+            <div class="card-header" style="border-bottom-color: rgba(139, 92, 246, 0.2);">
+              <h3 style="color: #c4b5fd;"><i class="fa-solid fa-sparkles" style="color: #a78bfa;"></i> Gemini AI Synthesis</h3>
+            </div>
+            <div class="card-body loading-parent" id="gemini-synthesis-body">
+              <div class="loader"></div>
+              <div id="gemini-content" style="color: var(--text-primary); line-height: 1.6; font-size: 14px;"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="placeholder-container" id="analysis-placeholder">
+          <i class="fa-solid fa-chart-line placeholder-icon"></i>
+          <h3>Search Ticker to Analyze</h3>
+          <p>Input a ticker symbol like AAPL or BTCUSDT above and click "Generate Report" to retrieve full technical, fundamental, news, and sentiment analysis.</p>
+        </div>
+      </section>
+      
+      <!-- Tab 4: Options Analysis -->
+      <section id="options-analysis" class="tab-content">
+        <header class="content-header">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+              <h2>Options Analysis</h2>
+              <p>Scan unusual institutional option activity and inspect real-time option chains for US equities.</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <input type="text" id="options-symbol-input" value="SPY" placeholder="Enter Symbol (e.g. AAPL)" style="padding: 10px 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-weight: 600; width: 180px; text-transform: uppercase;">
+              <button id="run-options-btn" class="primary-btn" onclick="fetchOptionsData()" style="padding: 10px 16px; border-radius: 8px; font-weight: 600;">
+                <i class="fa-solid fa-magnifying-glass"></i> Analyze Options
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Options Loading Overlay -->
+        <div id="options-loading-overlay" style="display: none;">
+          <div class="radar-container">
+            <div class="radar-screen">
+              <div class="radar-sweep"></div>
+              <div class="radar-grid-ring ring-1"></div>
+              <div class="radar-grid-ring ring-2"></div>
+              <div class="radar-grid-ring ring-3"></div>
+              <div class="radar-crosshair-h"></div>
+              <div class="radar-crosshair-v"></div>
+              <div class="radar-blip blip-1"></div>
+              <div class="radar-blip blip-2"></div>
+              <div class="radar-blip blip-3"></div>
+            </div>
+            <h3 style="font-size: 15px; font-weight: 700; color: #fff; margin-top: 24px; margin-bottom: 12px; text-align: center; width: 100%;">
+              Analyzing Option Flows... <span id="options-progress-text">0%</span>
+            </h3>
+            <div class="progress-bar-bg" style="height: 6px; width: 300px; margin: 0 auto;">
+              <div class="progress-bar-fill" id="options-progress-bar" style="width: 0%;"></div>
+            </div>
+            <p style="font-size: 11px; color: var(--text-secondary); text-align: center; margin-top: 14px; max-width: 400px; line-height: 1.4; margin-left: auto; margin-right: auto;">
+              Fetching implied volatilities, bid/ask spreads, and scanning volume-to-open-interest ratios...
+            </p>
+          </div>
+        </div>
+
+        <!-- Options Dashboard Grid -->
+        <div class="grid-layout cols-3" id="options-dashboard" style="display: none;">
+          <!-- Left Column: Unusual Options Activity (2-span) -->
+          <div class="card glass-card col-span-2">
+            <div class="card-header" style="display:flex; justify-content: space-between; align-items: center;">
+              <h3><i class="fa-solid fa-bolt"></i> Unusual Option Activity</h3>
+              <div style="font-size: 12px; color: var(--text-muted);">
+                Sorted by V/OI ratio (Volume > Open Interest)
+              </div>
+            </div>
+            <div class="card-body" style="padding: 0; overflow-x: auto;">
+              <table class="premium-table" id="unusual-options-table">
+                <thead>
+                  <tr>
+                    <th>Option Contract</th>
+                    <th>Strike / Side</th>
+                    <th>Expiry</th>
+                    <th>Vol / OI</th>
+                    <th>V/OI Ratio</th>
+                    <th>Moneyness</th>
+                    <th>Price / IV</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right Column: Institutional Sentiment Metric -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-brain"></i> Option Flow Sentiment</h3>
+            </div>
+            <div class="card-body" style="display: flex; flex-direction: column; gap: 24px; padding: 24px;">
+              <div style="text-align: center;">
+                <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Underlying Price</div>
+                <div id="options-spot-price" style="font-size: 36px; font-weight: 800; color: #fff; margin-top: 8px; font-family: var(--font-mono);">$0.00</div>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <h4 style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 12px;">Call vs Put Volume Distribution</h4>
+                <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; margin-bottom: 8px;">
+                  <span style="color: var(--accent-green);">Calls: <span id="options-call-vol">0</span></span>
+                  <span style="color: var(--accent-red);">Puts: <span id="options-put-vol">0</span></span>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden; display: flex;">
+                  <div id="options-call-bar" style="background: var(--accent-green); height: 100%; width: 50%;"></div>
+                  <div id="options-put-bar" style="background: var(--accent-red); height: 100%; width: 50%;"></div>
+                </div>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <h4 style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px;">Directional Sentiment</h4>
+                <div id="options-sentiment-verdict" class="badge-large neutral" style="display: inline-block; padding: 8px 16px; font-size: 13px; font-weight: 700; text-transform: uppercase;">Neutral</div>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); padding-top: 20px;" id="suggested-setups-section">
+                <h4 style="font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 12px;"><i class="fa-solid fa-lightbulb"></i> Suggested Setups</h4>
+                
+                <!-- Call Setup -->
+                <div class="setup-box" style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                    <span style="font-size: 10px; font-weight:800; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;">BULLISH CALL</span>
+                    <span id="call-setup-strike" style="font-family: var(--font-mono); font-size: 12px; font-weight:700; color: #fff;">$0.00 Call</span>
+                  </div>
+                  <div id="call-setup-symbol" style="font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary); margin-bottom: 6px; word-break: break-all; display:flex; align-items:center; gap:6px;">-</div>
+                  <div style="display:flex; justify-content:space-between; font-size: 11px; color: var(--text-muted);">
+                    <span>Ask: <strong id="call-setup-ask" style="color: #fff;">-</strong></span>
+                    <span>Break-even: <strong id="call-setup-be" style="color: #fff;">-</strong></span>
+                  </div>
+                </div>
+
+                <!-- Put Setup -->
+                <div class="setup-box" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                    <span style="font-size: 10px; font-weight:800; color: var(--accent-red); background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">BEARISH PUT</span>
+                    <span id="put-setup-strike" style="font-family: var(--font-mono); font-size: 12px; font-weight:700; color: #fff;">$0.00 Put</span>
+                  </div>
+                  <div id="put-setup-symbol" style="font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary); margin-bottom: 6px; word-break: break-all; display:flex; align-items:center; gap:6px;">-</div>
+                  <div style="display:flex; justify-content:space-between; font-size: 11px; color: var(--text-muted);">
+                    <span>Ask: <strong id="put-setup-ask" style="color: #fff;">-</strong></span>
+                    <span>Break-even: <strong id="put-setup-be" style="color: #fff;">-</strong></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Full Option Chain Table (3-span) -->
+          <div class="card glass-card col-span-3">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+              <h3><i class="fa-solid fa-bars-staggered"></i> Live Option Chain</h3>
+              <div style="display:flex; gap: 12px; align-items: center;">
+                <label for="options-expiry-select" style="font-size: 12px; font-weight:600; color: var(--text-secondary);">Select Expiry:</label>
+                <select id="options-expiry-select" onchange="fetchOptionsChainOnly()" style="padding: 6px 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 6px; color: #fff; font-weight: 600;"></select>
+              </div>
+            </div>
+            <div class="card-body" style="padding: 0; overflow-x: auto;">
+              <table class="premium-table" id="options-chain-table" style="width: 100%; text-align: center;">
+                <thead>
+                  <tr style="border-bottom: 2px solid var(--border-color);">
+                    <th colspan="4" style="background: rgba(16, 185, 129, 0.05); color: var(--accent-green); text-align: center; border-right: 1px solid var(--border-color);">CALLS</th>
+                    <th style="color: #fff; text-align: center; background: rgba(0, 0, 0, 0.4); border-right: 1px solid var(--border-color);">STRIKE</th>
+                    <th colspan="4" style="background: rgba(239, 68, 68, 0.05); color: var(--accent-red); text-align: center;">PUTS</th>
+                  </tr>
+                  <tr>
+                    <th style="font-size: 10px; background: rgba(16, 185, 129, 0.02);">Last</th>
+                    <th style="font-size: 10px; background: rgba(16, 185, 129, 0.02);">Bid/Ask</th>
+                    <th style="font-size: 10px; background: rgba(16, 185, 129, 0.02);">Vol</th>
+                    <th style="font-size: 10px; background: rgba(16, 185, 129, 0.02); border-right: 1px solid var(--border-color);">IV</th>
+                    <th style="background: rgba(0, 0, 0, 0.3); font-weight: 800; border-right: 1px solid var(--border-color);">Strike</th>
+                    <th style="font-size: 10px; background: rgba(239, 68, 68, 0.02);">Last</th>
+                    <th style="font-size: 10px; background: rgba(239, 68, 68, 0.02);">Bid/Ask</th>
+                    <th style="font-size: 10px; background: rgba(239, 68, 68, 0.02);">Vol</th>
+                    <th style="font-size: 10px; background: rgba(239, 68, 68, 0.02);">IV</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Side-by-side CALLS and PUTS filled via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div class="placeholder-container" id="options-placeholder">
+          <i class="fa-solid fa-sliders" style="font-size: 48px; color: var(--accent-amber); margin-bottom: 16px;"></i>
+          <h3>Search a Stock to View Options Data</h3>
+          <p>Get real-time unusual activity, volume breakdown, and side-by-side Calls & Puts chains.</p>
+        </div>
+      </section>
+      
+      <!-- Tab 5: Scalping Scanner -->
+      <section id="scalping-scanner" class="tab-content">
+        <header class="content-header">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div>
+              <h2>15m Scalping Scanner</h2>
+              <p>Potential top 15 scalping setups on the 15-minute timeframe across Crypto, Metals, and Forex.</p>
+            </div>
+            <button id="run-scalping-btn" class="primary-btn" onclick="loadScalpingReport(true)" style="padding: 10px 16px; border-radius: 8px; font-weight: 600;">
+              <i class="fa-solid fa-radar fa-spin-slow"></i> Scan Markets
+            </button>
+          </div>
+        </header>
+        
+        <!-- Scalping Scanner overlay loader -->
+        <div id="scalping-loading-overlay" style="display: none;">
+          <div class="radar-container">
+            <div class="radar-screen">
+              <div class="radar-sweep"></div>
+              <div class="radar-grid-ring ring-1"></div>
+              <div class="radar-grid-ring ring-2"></div>
+              <div class="radar-grid-ring ring-3"></div>
+              <div class="radar-crosshair-h"></div>
+              <div class="radar-crosshair-v"></div>
+              <div class="radar-blip blip-1"></div>
+              <div class="radar-blip blip-2"></div>
+              <div class="radar-blip blip-3"></div>
+            </div>
+            <h3 style="font-size: 15px; font-weight: 700; color: #fff; margin-top: 24px; margin-bottom: 12px; text-align: center; width: 100%;">
+              Scanning Global Markets... <span id="scalping-progress-text">0%</span>
+            </h3>
+            <div class="progress-bar-bg" style="height: 6px; width: 300px; margin: 0 auto;">
+              <div class="progress-bar-fill" id="scalping-progress-bar" style="width: 0%;"></div>
+            </div>
+            <p style="font-size: 11px; color: var(--text-secondary); text-align: center; margin-top: 14px; max-width: 400px; line-height: 1.4; margin-left: auto; margin-right: auto;">
+              Intercepting live 15m intervals across Crypto, Metals, and Forex networks...
+            </p>
+          </div>
+        </div>
+        
+        <div class="card glass-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-list-check"></i> Potential Scalping Setups</h3>
+            <div id="scalping-timestamp" style="font-size: 12px; color: var(--text-muted);">
+              Not scanned yet
+            </div>
+          </div>
+          <div class="card-body loading-parent" id="scalping-scanner-body" style="padding: 0; overflow-x: auto;">
+            <table class="premium-table" id="scalping-table" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>Asset Class</th>
+                  <th>Symbol</th>
+                  <th>Direction</th>
+                  <th>Current Price</th>
+                  <th>Entry Trigger</th>
+                  <th>Stop Loss (SL)</th>
+                  <th>Take Profit 1 (TP1)</th>
+                  <th>Take Profit 2 (TP2)</th>
+                  <th>Confidence</th>
+                  <th style="text-align: center;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="scalping-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Tab 6: Gold Analyst Cockpit -->
+      <section id="gold-analyst" class="tab-content">
+        <header class="gold-section-header">
+          <h2>XAUUSD Institutional Analysis</h2>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="control-group" style="margin:0;">
+              <label for="gold-timeframe" style="font-size:10px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-secondary); margin-bottom:4px;">Timeframe</label>
+              <select id="gold-timeframe">
+                <option value="5m">5 Minutes</option>
+                <option value="15m" selected>15 Minutes</option>
+                <option value="1h">1 Hour</option>
+                <option value="4h">4 Hours</option>
+                <option value="1D">Daily</option>
+              </select>
+            </div>
+            <button class="primary-btn" id="generate-gold-report-btn">
+              <i class="fa-solid fa-rotate"></i> Run Analyst Engine
+            </button>
+            <button id="send-telegram-btn-header" onclick="sendToTelegram(this)" class="primary-btn" style="padding: 10px 16px; border-radius: 8px; display: none;">
+              <i class="fa-brands fa-telegram" style="font-size: 16px; margin-right: 8px;"></i> Publish to Telegram
+            </button>
+          </div>
+        </header>
+        
+        <!-- Live Market Clocks -->
+        <div class="clock-grid">
+          <div class="session-clock">
+            <div class="clock-info">
+              <h4>Tokyo Session</h4>
+              <span id="tokyo-time">00:00:00</span>
+            </div>
+            <span class="status closed" id="tokyo-status">CLOSED</span>
+          </div>
+          <div class="session-clock">
+            <div class="clock-info">
+              <h4>London Session</h4>
+              <span id="london-time">00:00:00</span>
+            </div>
+            <span class="status closed" id="london-status">CLOSED</span>
+          </div>
+          <div class="session-clock">
+            <div class="clock-info">
+              <h4>New York Session</h4>
+              <span id="ny-time">00:00:00</span>
+            </div>
+            <span class="status closed" id="ny-status">CLOSED</span>
+          </div>
+        </div>
+        
+        <!-- Analyst overlay loader -->
+        <div id="gold-loading-overlay" style="display: none;">
+          <div class="progress-bar-container" style="width: 80%; max-width: 500px; padding: 24px; background: var(--bg-card); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-main); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <h3 style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 12px; text-align: center; width: 100%;">
+              Synthesizing Institutional Gold Data... <span id="gold-progress-text">0%</span>
+            </h3>
+            <div class="progress-bar-bg" style="height: 8px; width: 100%;">
+              <div class="progress-bar-fill" id="gold-progress-bar" style="width: 0%;"></div>
+            </div>
+            <p style="font-size: 11px; color: var(--text-secondary); text-align: center; margin-top: 14px; line-height: 1.4;">
+              Fetching multi-timeframe indicators, COMEX COT derivatives, and search engine intelligence...
+            </p>
+          </div>
+        </div>
+        
+        <!-- Analyst cockpit grid -->
+        <div class="grid-layout cols-3" style="margin-bottom:24px;">
+          <!-- Card 1: Final Verdict -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-gavel"></i> Final Verdict</h3>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:180px;">
+              <span style="font-size:11px; text-transform:uppercase; color:var(--text-secondary); letter-spacing:1px;">Recommendation</span>
+              <div class="badge-large wait" id="verdict-badge" style="margin:8px 0 12px 0;">WAIT</div>
+              <span id="success-pct" style="font-size:12px; color:var(--text-secondary); font-family:var(--font-mono); margin-bottom: 12px;">-</span>
+              <button id="send-telegram-btn" onclick="sendToTelegram(this)" class="primary-btn" style="padding: 6px 12px; font-size: 12px; border-radius: 6px; display: none;">
+                <i class="fa-brands fa-telegram"></i> Publish to Telegram
+              </button>
+            </div>
+          </div>
+          
+          <!-- Card 2: Trade Setup -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-list-check"></i> Trade Setup</h3>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; justify-content:center; min-height:180px;">
+              <div class="stat-row">
+                <span>Entry Trigger</span>
+                <span id="v-entry" style="color:var(--accent-cyan); font-weight:700;">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Stop Loss</span>
+                <span id="v-sl" style="color:var(--accent-red); font-weight:700;">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Risk Reward</span>
+                <span id="v-rr" style="font-weight:700;">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 3: Targets -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-bullseye"></i> Targets</h3>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; justify-content:center; min-height:180px;">
+              <div class="stat-row">
+                <span>Take Profit 1</span>
+                <span id="v-tp1" style="color:var(--accent-green); font-weight:700;">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Take Profit 2</span>
+                <span id="v-tp2" style="color:var(--accent-green); font-weight:700;">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Take Profit 3</span>
+                <span id="v-tp3" style="color:var(--accent-green); font-weight:700;">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Live Chart and Deep Breakdown Row -->
+        <div class="grid-layout cols-2" style="margin-bottom:24px;">
+          <!-- Interactive Live Gold Chart Card (TradingView Widget) -->
+          <div class="card glass-card col-span-2">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-line"></i> XAUUSD Live Interactive Chart</h3>
+            </div>
+            <div class="card-body" style="padding:0; height:800px; background:rgba(0,0,0,0.2);">
+              <div id="tradingview_gold_chart" style="width:100%; height:100%;"></div>
+            </div>
+          </div>
+          
+          <!-- Card 4: Market Structure -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-sitemap"></i> Market Structure & ICT</h3>
+            </div>
+            <div class="card-body">
+              <div class="matrix-box" style="margin-bottom: 16px;">
+                <div class="matrix-cell">
+                  <h5>Daily</h5>
+                  <span id="ms-d">-</span>
+                </div>
+                <div class="matrix-cell">
+                  <h5>4 Hours</h5>
+                  <span id="ms-4h">-</span>
+                </div>
+                <div class="matrix-cell">
+                  <h5>1 Hour</h5>
+                  <span id="ms-1h">-</span>
+                </div>
+                <div class="matrix-cell">
+                  <h5>15 Min</h5>
+                  <span id="ms-15m">-</span>
+                </div>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Swing Highs/Lows</span>
+                <span class="row-value" id="ms-highs-lows">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Structure Shifts (BOS)</span>
+                <span class="row-value" id="ms-shifts">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Character Changes (CHOCH)</span>
+                <span class="row-value" id="ms-character">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 5: Technical indicators -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-calculator"></i> Technical Confluence</h3>
+            </div>
+            <div class="card-body">
+              <div class="narrative-row">
+                <span class="row-label">Moving Averages</span>
+                <span class="row-value" id="ta-mas">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Oscillators (RSI / MACD)</span>
+                <span class="row-value" id="ta-oscillators">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Bollinger Bands</span>
+                <span class="row-value" id="ta-bb">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Support & Resistance Pivots</span>
+                <span class="row-value" id="ta-sr">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">FVG & Orderblocks</span>
+                <span class="row-value" id="ta-fvg">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 6: Smart Money Analysis -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-crosshairs"></i> Smart Money Analysis</h3>
+            </div>
+            <div class="card-body">
+              <div class="narrative-row">
+                <span class="row-label">Liquidity Sweep Targets</span>
+                <span class="row-value" id="sm-liquidity">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Order Flow Dominance</span>
+                <span class="row-value" id="sm-flow">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Accumulation/Distribution</span>
+                <span class="row-value" id="sm-amd">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 7: Price Action & Volume -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-cubes"></i> Price Action & Volume</h3>
+            </div>
+            <div class="card-body">
+              <div class="narrative-row">
+                <span class="row-label">Candlestick Confirmation</span>
+                <span class="row-value" id="pa-candlesticks">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Chart Patterns</span>
+                <span class="row-value" id="pa-patterns">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Volume Profile & POC</span>
+                <span class="row-value" id="vol-profile">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Buying/Selling Delta</span>
+                <span class="row-value" id="vol-delta">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 8: Macro Fundamentals -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-globe"></i> Macro Fundamentals</h3>
+            </div>
+            <div class="card-body">
+              <div class="stat-row" style="margin-bottom:12px;">
+                <span>DXY / US10Y Yields</span>
+                <span id="fnd-yields" style="font-weight:700;">-</span>
+              </div>
+              <p class="narrative-p" id="fnd-macro" style="font-size:13px; max-height: 80px; overflow-y:auto; padding-right:6px; color:var(--text-secondary); margin-bottom:12px;">-</p>
+              <div class="narrative-row">
+                <span class="row-label">Fed Speeches & Calendar</span>
+                <span class="row-value" id="fnd-speeches">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 9: Sentiment & Option Chain -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-users-rectangle"></i> Sentiment & Options</h3>
+            </div>
+            <div class="card-body">
+              <div class="narrative-row">
+                <span class="row-label">Retail & COT Positioning</span>
+                <span class="row-value" id="sent-cot">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Volatility & Fear (VIX)</span>
+                <span class="row-value" id="sent-fear">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">Intermarket Correlation</span>
+                <span class="row-value" id="intermarket-corr">-</span>
+              </div>
+              <div class="narrative-row">
+                <span class="row-label">COMEX Options Gamma</span>
+                <span class="row-value" id="opt-exposure">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 10: Risks & Execution details (Full Width) -->
+          <div class="card glass-card col-span-2">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-shield-halved"></i> Risk & Invalidation parameters</h3>
+            </div>
+            <div class="card-body">
+              <div class="grid-layout cols-2">
+                <div>
+                  <div class="narrative-row">
+                    <span class="row-label">Expected Range / ATR</span>
+                    <span class="row-value" id="risk-atr">-</span>
+                  </div>
+                  <div class="narrative-row">
+                    <span class="row-label">Position Sizing Guidelines</span>
+                    <span class="row-value" id="risk-sizing">-</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="narrative-row">
+                    <span class="row-label">Invalidation Price Level</span>
+                    <span class="row-value" id="risk-invalidation">-</span>
+                  </div>
+                  <div class="narrative-row">
+                    <span class="row-label">Invalidating News Events</span>
+                    <span class="row-value" id="risk-news">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 7: Mutual Funds Dashboard -->
+      <section id="mutual-funds" class="tab-content">
+        <header class="gold-section-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 24px;">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <h2>Mutual Funds Analytics</h2>
+            <span style="font-size:12px; color:var(--text-secondary);">Direct NAV access via AMFI India & TigZig network</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap: wrap;">
+            <div style="position:relative; display:flex; gap:8px;">
+              <input type="text" id="mf-search-input" placeholder="Search mutual funds (e.g. HDFC Index)..." style="width: 280px; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-family:inherit;">
+              <button class="primary-btn" onclick="searchMutualFunds()"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+            </div>
+            <select id="mf-search-results" style="display:none; width: 320px; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: #fff; font-family:inherit;" onchange="loadMutualFundDetails(this.value)">
+            </select>
+          </div>
+        </header>
+
+        <!-- Mutual Funds Loading Overlay -->
+        <div id="mf-loading-overlay" style="display: none;">
+          <div class="radar-container">
+            <div class="radar-screen">
+              <div class="radar-sweep"></div>
+              <div class="radar-grid-ring ring-1"></div>
+              <div class="radar-grid-ring ring-2"></div>
+              <div class="radar-grid-ring ring-3"></div>
+              <div class="radar-crosshair-h"></div>
+              <div class="radar-crosshair-v"></div>
+              <div class="radar-blip blip-1"></div>
+              <div class="radar-blip blip-2"></div>
+              <div class="radar-blip blip-3"></div>
+            </div>
+            <h3 style="font-size: 15px; font-weight: 700; color: #fff; margin-top: 24px; margin-bottom: 12px; text-align: center; width: 100%;">
+              Analyzing NAV History... <span id="mf-progress-text">0%</span>
+            </h3>
+            <div class="progress-bar-bg" style="height: 6px; width: 300px; margin: 0 auto;">
+              <div class="progress-bar-fill" id="mf-progress-bar" style="width: 0%;"></div>
+            </div>
+            <p style="font-size: 11px; color: var(--text-secondary); text-align: center; margin-top: 14px; max-width: 400px; line-height: 1.4; margin-left: auto; margin-right: auto;">
+              Retrieving historical daily Net Asset Values from AMFI India network...
+            </p>
+          </div>
+        </div>
+
+        <!-- Top 10 Diversified Picks Card -->
+        <div class="card glass-card" id="mf-recommendations-card" style="margin-top: 20px; padding: 24px;">
+          <div class="card-header" style="padding: 0 0 16px 0; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <h3><i class="fa-solid fa-ranking-star" style="color:var(--accent-amber);"></i> Top 10 Diversified Fund Picks</h3>
+            <span style="font-size: 11px; color: var(--text-muted);">Click any fund card below to automatically load its performance and run the SIP modeler</span>
+          </div>
+          <div class="card-body" style="padding: 20px 0 0 0;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+              
+              <!-- 1. Large Cap Index -->
+              <div class="setup-box" style="background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(151165)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE CAP INDEX</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 151165</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">360 ONE ELSS Nifty 50 Index Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Low cost index tracking combined with equity tax savings (ELSS).</p>
+              </div>
+
+              <!-- 2. Large Cap Active -->
+              <div class="setup-box" style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(120586)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE CAP ACTIVE</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 120586</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">ICICI Prudential Large Cap Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Active bluechip core equity exposure targeting long-term capital growth.</p>
+              </div>
+
+              <!-- 3. Mid Cap Growth -->
+              <div class="setup-box" style="background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(118989)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-amber); background: rgba(245, 158, 11, 0.1); padding: 2px 6px; border-radius: 4px;">MID CAP GROWTH</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118989</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">HDFC Mid Cap Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">High conviction active picking focusing on market leading mid-sized companies.</p>
+              </div>
+
+              <!-- 4. Large & Midcap -->
+              <div class="setup-box" style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(118834)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: #a78bfa; background: rgba(139, 92, 246, 0.1); padding: 2px 6px; border-radius: 4px;">LARGE & MIDCAP</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118834</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Mirae Asset Large & Midcap Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Optimized dual-exposure blending stability of Large Caps with Mid Cap growth.</p>
+              </div>
+
+              <!-- 5. Small Cap Active -->
+              <div class="setup-box" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(118778)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-red); background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">SMALL CAP ACTIVE</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 118778</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Nippon India Small Cap Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Highly rated active manager capturing massive alphas in small cap space.</p>
+              </div>
+
+              <!-- 6. Small Cap Index -->
+              <div class="setup-box" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(150677)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-red); background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">SMALL CAP INDEX</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 150677</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">SBI Nifty Smallcap 250 Index Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Broadly diversified passive index exposure to 250 emerging small cap firms.</p>
+              </div>
+
+              <!-- 7. Flexi Cap / Global -->
+              <div class="setup-box" style="background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(122639)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;">FLEXI CAP / GLOBAL</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 122639</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">Parag Parikh Flexi Cap Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Dynamic capitalization routing coupled with US tech and multinational holdings.</p>
+              </div>
+
+              <!-- 8. Multi Asset Allocation -->
+              <div class="setup-box" style="background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(120334)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-amber); background: rgba(245, 158, 11, 0.1); padding: 2px 6px; border-radius: 4px;">MULTI ASSET ALLOC</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 120334</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">ICICI Prudential Multi-Asset Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Active dynamic hedging rotating capital across Equity, Debt, and Gold.</p>
+              </div>
+
+              <!-- 9. Hybrid Balanced -->
+              <div class="setup-box" style="background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(119609)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--accent-cyan); background: rgba(0, 229, 255, 0.1); padding: 2px 6px; border-radius: 4px;">HYBRID / BALANCED</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 119609</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">SBI Equity Hybrid Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Stable blended performance combining equity gains with defensive bond safety.</p>
+              </div>
+
+              <!-- 10. Liquid / Cash Debt -->
+              <div class="setup-box" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s;" onclick="loadMutualFundDetails(119091)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                  <span style="font-size: 9px; font-weight:800; color: var(--text-muted); background: rgba(255, 255, 255, 0.05); padding: 2px 6px; border-radius: 4px;">LIQUID / CASH DEBT</span>
+                  <span style="font-family: var(--font-mono); font-size: 11px; font-weight:700; color: var(--text-muted);">Code: 119091</span>
+                </div>
+                <h4 style="font-size: 13px; font-weight:700; color:#fff; margin-bottom: 6px; line-height: 1.4;">HDFC Liquid Fund</h4>
+                <p style="font-size: 11px; color: var(--text-secondary); margin:0; line-height:1.4;">Cash management parking fund offering near-zero capital risk and high liquidity.</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Placeholder -->
+        <div class="placeholder-card card glass-card" id="mf-placeholder" style="padding: 60px; text-align: center; margin-top: 20px;">
+          <i class="fa-solid fa-piggy-bank" style="font-size: 64px; color: var(--accent-cyan); margin-bottom: 24px; opacity: 0.8;"></i>
+          <h3>Search Mutual Funds to Begin</h3>
+          <p style="color: var(--text-muted); max-width: 450px; margin: 12px auto 0 auto; line-height: 1.6;">
+            Enter the name of any Indian mutual fund scheme above to analyze its NAV history, calculate trailing CAGR returns, analyze volatility / max drawdown risk, and model historical SIP performance.
+          </p>
+        </div>
+
+        <!-- Dashboard Layout -->
+        <div class="grid-layout cols-3" id="mf-dashboard" style="display: none; margin-top: 24px;">
+          <!-- Left Column: Fund info & trailing returns -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-circle-info"></i> Fund Info & Trailing Returns</h3>
+            </div>
+            <div class="card-body" style="padding: 20px; display:flex; flex-direction:column; gap:16px;">
+              <div>
+                <h4 style="font-size: 14px; font-weight:700; color:#fff;" id="mf-info-name">-</h4>
+                <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:6px;">
+                  <span>Scheme Code: <strong id="mf-info-code" style="color:#fff;">-</strong></span>
+                  <span>ISIN: <strong id="mf-info-isin" style="color:#fff;">-</strong></span>
+                </div>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Latest Net Asset Value</div>
+                <div id="mf-info-nav" style="font-size: 32px; font-weight: 800; color: var(--accent-cyan); margin-top: 4px; font-family: var(--font-mono);">$0.00</div>
+                <div id="mf-info-nav-date" style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">As of Date</div>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <h4 style="font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px;">Trailing Trajectory</h4>
+                <table class="data-table" style="font-size: 12px;">
+                  <thead>
+                    <tr>
+                      <th>Period</th>
+                      <th>Total Return</th>
+                      <th>CAGR (Ann.)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mf-returns-table-body">
+                    <!-- Trailing returns populated via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Column: Risk Metrics & Stats -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-shield-halved"></i> Risk & Volatility Analytics</h3>
+            </div>
+            <div class="card-body" style="padding: 20px; display:flex; flex-direction:column; gap:16px;">
+              <div class="stat-row">
+                <span>Standard Deviation (Daily)</span>
+                <span id="mf-risk-sd" style="font-family: var(--font-mono); font-weight:700;">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Annualized Volatility</span>
+                <span id="mf-risk-vol" style="font-family: var(--font-mono); font-weight:700; color: var(--accent-amber);">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Maximum Drawdown</span>
+                <span id="mf-risk-mdd" style="font-family: var(--font-mono); font-weight:700; color: var(--accent-red);">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Sharpe Ratio (RFR = 6%)</span>
+                <span id="mf-risk-sharpe" style="font-family: var(--font-mono); font-weight:700; color: var(--accent-cyan);">-</span>
+              </div>
+              <div class="stat-row">
+                <span>Sortino Ratio (MAR = 6%)</span>
+                <span id="mf-risk-sortino" style="font-family: var(--font-mono); font-weight:700;">-</span>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <h4 style="font-size: 12px; font-weight:700; color: var(--text-secondary); margin-bottom: 8px;">Peak-to-Trough Drawdown Recovery</h4>
+                <p id="mf-risk-explanation" style="font-size:11px; color: var(--text-secondary); line-height: 1.5; margin:0;">
+                  Risk calculations are computed dynamically over the full historical NAV series retrieved from the TigZig API using standard daily return metrics.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: SIP Backtest Modeler -->
+          <div class="card glass-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-calculator"></i> SIP Backtest Modeler</h3>
+            </div>
+            <div class="card-body" style="padding: 20px; display:flex; flex-direction:column; gap:14px;">
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="control-group" style="margin:0;">
+                  <label for="mf-sip-amount" style="font-size:10px; text-transform:uppercase; color:var(--text-secondary);">Monthly SIP (₹)</label>
+                  <input type="number" id="mf-sip-amount" value="5000" min="500" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-family: var(--font-mono);">
+                </div>
+                <div class="control-group" style="margin:0;">
+                  <label for="mf-sip-day" style="font-size:10px; text-transform:uppercase; color:var(--text-secondary);">SIP Day of Month</label>
+                  <input type="number" id="mf-sip-day" value="5" min="1" max="28" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: #fff; font-family: var(--font-mono);">
+                </div>
+              </div>
+              <div class="control-group" style="margin:0;">
+                <label for="mf-sip-years" style="font-size:10px; text-transform:uppercase; color:var(--text-secondary);">Backtest Duration</label>
+                <select id="mf-sip-years">
+                  <option value="1">1 Year</option>
+                  <option value="3" selected>3 Years</option>
+                  <option value="5">5 Years</option>
+                  <option value="10">10 Years</option>
+                  <option value="all">Maximum Available</option>
+                </select>
+              </div>
+              <button class="primary-btn" id="run-mf-sip-btn" onclick="backtestSIP()" style="width:100%; border-radius: 6px; justify-content: center; padding: 10px 14px;">
+                <i class="fa-solid fa-play"></i> Run SIP Calculator
+              </button>
+              
+              <div style="border-top: 1px solid var(--border-color); padding-top: 10px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                  <div style="font-size: 10px; color: var(--text-secondary); text-transform:uppercase;">Invested Principal</div>
+                  <div id="mf-sip-invested" style="font-size: 14px; font-weight:700; font-family: var(--font-mono); margin-top:2px;">₹0</div>
+                </div>
+                <div>
+                  <div style="font-size: 10px; color: var(--text-secondary); text-transform:uppercase;">Current Value</div>
+                  <div id="mf-sip-value" style="font-size: 14px; font-weight:700; font-family: var(--font-mono); margin-top:2px;">₹0</div>
+                </div>
+                <div>
+                  <div style="font-size: 10px; color: var(--text-secondary); text-transform:uppercase;">Gain / Loss</div>
+                  <div id="mf-sip-pnl" style="font-size: 14px; font-weight:700; font-family: var(--font-mono); margin-top:2px;">-</div>
+                </div>
+                <div>
+                  <div style="font-size: 10px; color: var(--text-secondary); text-transform:uppercase;">SIP IRR / CAGR</div>
+                  <div id="mf-sip-cagr" style="font-size: 14px; font-weight:700; font-family: var(--font-mono); margin-top:2px;">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Full width historical chart -->
+          <div class="card glass-card col-span-3">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-area"></i> Historical Net Asset Value (NAV) Chart</h3>
+            </div>
+            <div class="card-body" style="padding: 16px; height: 400px; background: rgba(0,0,0,0.2);">
+              <canvas id="mf-nav-chart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+    </main>
+  </div>
+  
+  <!-- Core Javascript Logic -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

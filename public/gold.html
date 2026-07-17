@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XAUUSD Institutional Gold Dashboard</title>
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* UIUXMAXPRO Design System */
+    :root {
+      --bg-darkest: #05080e;
+      --bg-darker: #0b111e;
+      --bg-card: rgba(16, 25, 44, 0.55);
+      --bg-card-hover: rgba(22, 35, 62, 0.7);
+      
+      --gold-primary: #ffd700;
+      --gold-glow: rgba(255, 215, 0, 0.25);
+      --gold-dark: #b8860b;
+      
+      --accent-cyan: #00f0ff;
+      --accent-green: #00e676;
+      --accent-red: #ff1744;
+      --accent-amber: #ff9100;
+      
+      --border-color: rgba(255, 215, 0, 0.08);
+      --border-hover: rgba(255, 215, 0, 0.25);
+      --border-active: rgba(255, 215, 0, 0.6);
+      
+      --text-gold: #ffeb3b;
+      --text-primary: #f3f5f8;
+      --text-secondary: #a0aec0;
+      --text-muted: #5e6b82;
+      
+      --font-display: 'Cinzel', serif;
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      --blur-val: 16px;
+      --shadow-max: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-darkest);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.05), transparent 60%);
+    }
+
+    /* Ambient Glow Backgrounds */
+    .glow-container {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.08;
+    }
+    .glow-orb-1 {
+      top: -10%, left: 10%;
+      width: 600px;
+      height: 600px;
+      background: var(--gold-primary);
+    }
+    .glow-orb-2 {
+      bottom: 10%, right: 10%;
+      width: 500px;
+      height: 500px;
+      background: var(--accent-cyan);
+    }
+
+    /* Outer Wrapper */
+    .dashboard-wrapper {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Header styling */
+    .header-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      background: rgba(11, 17, 30, 0.4);
+      padding: 24px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+    }
+
+    .header-title-box h1 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--gold-primary);
+      text-shadow: 0 0 10px var(--gold-glow);
+      text-transform: uppercase;
+    }
+
+    .header-title-box p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 14px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 12px var(--gold-glow);
+      color: var(--gold-primary);
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+      border: none;
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      color: #000;
+      background: var(--gold-primary);
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
+    }
+
+    /* Clocks Panel */
+    .market-sessions {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      background: rgba(11, 17, 30, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+
+    .session-clock {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .session-clock i {
+      color: var(--gold-primary);
+    }
+
+    .session-clock .clock-time {
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    .session-clock .status {
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .session-clock .status.open {
+      background: rgba(0, 230, 118, 0.15);
+      color: var(--accent-green);
+    }
+
+    .session-clock .status.closed {
+      background: rgba(255, 23, 68, 0.15);
+      color: var(--accent-red);
+    }
+
+    /* Large Verdict Card */
+    .verdict-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-max);
+      backdrop-filter: blur(var(--blur-val));
+      -webkit-backdrop-filter: blur(var(--blur-val));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .verdict-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gold-primary);
+    }
+
+    .verdict-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 2fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .verdict-badge-box {
+      text-align: center;
+      border-right: 1px solid var(--border-color);
+      padding-right: 32px;
+    }
+
+    .verdict-badge-box span {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    .badge-large {
+      font-family: var(--font-display);
+      font-size: 80px;
+      font-weight: 800;
+      margin: 10px 0;
+      line-height: 1;
+      letter-spacing: 4px;
+    }
+
+    .badge-large.sell {
+      color: var(--accent-red);
+      text-shadow: 0 0 30px rgba(255, 23, 68, 0.35);
+    }
+    .badge-large.buy {
+      color: var(--accent-green);
+      text-shadow: 0 0 30px rgba(0, 230, 118, 0.35);
+    }
+    .badge-large.wait {
+      color: var(--gold-primary);
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.35);
+    }
+
+    .verdict-details-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .verdict-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .verdict-stat span:first-child {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .verdict-stat span:last-child {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    .verdict-stat.primary-levels span:last-child {
+      color: var(--gold-primary);
+    }
+
+    /* 14 Parts Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .grid-col-span-2 {
+      grid-column: span 2;
+    }
+
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      backdrop-filter: blur(var(--blur-val));
+      -webkit-backdrop-filter: blur(var(--blur-val));
+      box-shadow: var(--shadow-max);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .info-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(255, 215, 0, 0.01);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-header h3 i {
+      color: var(--gold-primary);
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* Market Structure and Details Tables */
+    .levels-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--border-color);
+      font-size: 13px;
+    }
+    .levels-row:last-child {
+      border-bottom: none;
+    }
+    .levels-row span:first-child {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .levels-row span:last-child {
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    /* Pros / Cons column layout */
+    .pros-cons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .pros-column h4, .cons-column h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pros-column h4 { color: var(--accent-green); }
+    .cons-column h4 { color: var(--accent-red); }
+
+    .reasons-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .reasons-list li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      display: flex;
+      gap: 8px;
+    }
+
+    .reasons-list li i {
+      margin-top: 3px;
+      font-size: 12px;
+    }
+
+    .pros-column li i { color: var(--accent-green); }
+    .cons-column li i { color: var(--accent-red); }
+
+    /* Matrix columns */
+    .matrix-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    .matrix-cell {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .matrix-cell h5 {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .matrix-cell span {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* Narrative paragraph */
+    .narrative-p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 14, 0.85);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .gold-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 215, 0, 0.05);
+      border-top-color: var(--gold-primary);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="glow-container">
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+  </div>
+
+  <div class="loader-overlay" id="loading-overlay">
+    <div class="gold-spinner"></div>
+    <h3 style="color: var(--gold-primary); font-family: var(--font-display); letter-spacing: 1px;">Running Live Institutional Analysis...</h3>
+    <p style="color: var(--text-secondary); font-size: 13px;">Querying TradingView, Yahoo Finance, and Tavily search agents...</p>
+  </div>
+
+  <div class="dashboard-wrapper">
+    
+    <!-- Top Header Panel -->
+    <header class="header-panel">
+      <div class="header-title-box">
+        <h1>Goldman Sachs & JP Morgan</h1>
+        <p>XAUUSD Institutional Analyst Desk Cockpit</p>
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="generateLiveReport()"><i class="fa-solid fa-bolt"></i> Generate Live Analysis</button>
+        <a href="/static/gold_report.md" target="_blank" class="btn"><i class="fa-solid fa-download"></i> Download Report (MD)</a>
+      </div>
+    </header>
+
+    <!-- Sessions countdown -->
+    <div class="market-sessions">
+      <div class="session-clock">
+        <i class="fa-regular fa-clock"></i>
+        <span>Tokyo / Asia:</span>
+        <span class="clock-time" id="tokyo-time">-</span>
+        <span class="status" id="tokyo-status">-</span>
+      </div>
+      <div class="session-clock">
+        <i class="fa-regular fa-clock"></i>
+        <span>London / Europe:</span>
+        <span class="clock-time" id="london-time">-</span>
+        <span class="status" id="london-status">-</span>
+      </div>
+      <div class="session-clock">
+        <i class="fa-regular fa-clock"></i>
+        <span>New York / US:</span>
+        <span class="clock-time" id="ny-time">-</span>
+        <span class="status" id="ny-status">-</span>
+      </div>
+    </div>
+
+    <!-- Part 14 & Primary Verdict Card -->
+    <div class="verdict-card" id="primary-verdict">
+      <div class="verdict-grid">
+        <div class="verdict-badge-box">
+          <span>Final Verdict Recommendation</span>
+          <div class="badge-large wait" id="verdict-badge">WAIT</div>
+          <span style="letter-spacing:1px;" id="success-pct">Expected Success: -</span>
+        </div>
+        
+        <div class="verdict-details-box">
+          <div class="verdict-stat primary-levels">
+            <span>Entry Trigger</span>
+            <span id="v-entry">-</span>
+          </div>
+          <div class="verdict-stat">
+            <span>Stop Loss</span>
+            <span id="v-sl" style="color: var(--accent-red);">-</span>
+          </div>
+          <div class="verdict-stat">
+            <span>Risk Reward</span>
+            <span id="v-rr" style="color: var(--accent-cyan);">-</span>
+          </div>
+          <div class="verdict-stat primary-levels">
+            <span>Take Profit 1</span>
+            <span id="v-tp1">-</span>
+          </div>
+          <div class="verdict-stat primary-levels">
+            <span>Take Profit 2</span>
+            <span id="v-tp2">-</span>
+          </div>
+          <div class="verdict-stat primary-levels">
+            <span>Take Profit 3</span>
+            <span id="v-tp3">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14 Parts Detailed Dashboard Grid -->
+    <div class="dashboard-grid">
+      
+      <!-- Card 1: Market Structure (Part 1) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-sitemap"></i> Part 1 — Market Structure</h3>
+        </div>
+        <div class="card-body">
+          <div class="matrix-box" style="margin-bottom: 16px;">
+            <div class="matrix-cell">
+              <h5>Daily</h5>
+              <span id="ms-d">-</span>
+            </div>
+            <div class="matrix-cell">
+              <h5>4 Hours</h5>
+              <span id="ms-4h">-</span>
+            </div>
+            <div class="matrix-cell">
+              <h5>1 Hour</h5>
+              <span id="ms-1h">-</span>
+            </div>
+            <div class="matrix-cell">
+              <h5>15 Min</h5>
+              <span id="ms-15m">-</span>
+            </div>
+          </div>
+          <div class="levels-row">
+            <span>Swing Highs/Lows</span>
+            <span id="ms-highs-lows">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Structure Shifts (BOS)</span>
+            <span id="ms-shifts">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Character Changes (CHOCH)</span>
+            <span id="ms-character">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Technical Confluences (Part 2) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-calculator"></i> Part 2 — Technical Confluence</h3>
+        </div>
+        <div class="card-body">
+          <div class="levels-row">
+            <span>Moving Averages</span>
+            <span id="ta-mas">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Oscillators (RSI / MACD)</span>
+            <span id="ta-oscillators">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Bollinger Bands</span>
+            <span id="ta-bb">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Support & Resistance Pivots</span>
+            <span id="ta-sr">-</span>
+          </div>
+          <div class="levels-row">
+            <span>FVG & Orderblocks</span>
+            <span id="ta-fvg">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Smart Money Concepts (Part 3) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-crosshairs"></i> Part 3 — Smart Money Analysis</h3>
+        </div>
+        <div class="card-body">
+          <div class="levels-row">
+            <span>Liquidity Sweep Targets</span>
+            <span id="sm-liquidity">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Order Flow Dominance</span>
+            <span id="sm-flow">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Accumulation/Distribution</span>
+            <span id="sm-amd">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Price Action & Delta Volume (Part 4 & 5) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-cubes"></i> Part 4 & 5 — Price Action & Volume</h3>
+        </div>
+        <div class="card-body">
+          <div class="levels-row">
+            <span>Candlestick Confirmation</span>
+            <span id="pa-candlesticks">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Chart Patterns</span>
+            <span id="pa-patterns">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Volume profile & POC</span>
+            <span id="vol-profile">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Buying/Selling Delta</span>
+            <span id="vol-delta">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5: Macro Fundamentals (Part 6) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-globe"></i> Part 6 — Macroeconomic Fundamentals</h3>
+        </div>
+        <div class="card-body">
+          <div class="levels-row" style="margin-bottom:12px;">
+            <span>DXY / US10Y Yields</span>
+            <span id="fnd-yields">-</span>
+          </div>
+          <p class="narrative-p" id="fnd-macro" style="font-size:13px; max-height: 100px; overflow-y:auto; padding-right:6px;">-</p>
+          <div class="levels-row" style="margin-top:12px;">
+            <span>Upcoming Fed Speeches & Calendar</span>
+            <span id="fnd-speeches">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6: Market Sentiment & Intermarket (Part 7 & 8) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-users-rectangle"></i> Part 7 & 8 — Sentiment & Intermarket</h3>
+        </div>
+        <div class="card-body">
+          <div class="levels-row">
+            <span>Retail & COT Positioning</span>
+            <span id="sent-cot">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Volatility & Fear (VIX)</span>
+            <span id="sent-fear">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Intermarket Correlation</span>
+            <span id="intermarket-corr">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7: Options & Futures positioning (Part 9) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-file-invoice"></i> Part 9 — Options & Futures</h3>
+        </div>
+        <div class="card-body">
+          <p class="narrative-p" id="opt-exposure" style="font-size:13px;">-</p>
+        </div>
+      </div>
+
+      <!-- Card 8: Risks & Execution details (Part 10, 11, 13) -->
+      <div class="info-card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-shield-halved"></i> Part 10, 11, 13 — Risk & Invalidation</h3>
+        </div>
+        <div class="card-body">
+          <div class="levels-row">
+            <span>Expected Range / Volatility</span>
+            <span id="risk-vol">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Invalidation Price level</span>
+            <span id="risk-invalidation" style="color:var(--accent-red); font-weight:700;">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Invalidating News events</span>
+            <span id="risk-news">-</span>
+          </div>
+          <div class="levels-row">
+            <span>Position Sizing (1% Risk)</span>
+            <span id="exec-sizing">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9: Reasons For Trade matrix (Part 12) (Full width) -->
+      <div class="info-card grid-col-span-2">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-scale-balanced"></i> Part 12 — Confluence Matrix (Pros vs Cons)</h3>
+        </div>
+        <div class="card-body">
+          <div class="pros-cons-grid">
+            <div class="pros-column">
+              <h4><i class="fa-solid fa-circle-check"></i> Institutional Supporting Confluences</h4>
+              <ul class="reasons-list" id="trade-pros">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
+            <div class="cons-column">
+              <h4><i class="fa-solid fa-circle-xmark"></i> Opposing Risk Factors</h4>
+              <ul class="reasons-list" id="trade-cons">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Live Market Session Clocks Logic
+    function updateMarketClocks() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      
+      // Sessions Opens (UTC times)
+      // Tokyo: 00:00 UTC
+      // London: 07:00 UTC
+      // NY: 13:00 UTC
+      
+      updateClock('tokyo', utc, 0, 9);
+      updateClock('london', utc, 7, 17);
+      updateClock('ny', utc, 13, 21);
+    }
+    
+    function updateClock(elementPrefix, utcTime, openHour, closeHour) {
+      const date = new Date(utcTime);
+      const currentHour = date.getUTCHours();
+      const currentMinutes = date.getUTCMinutes();
+      const currentSeconds = date.getUTCSeconds();
+      
+      // Formatted UTC clock for display
+      const timeStr = `${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}:${String(date.getUTCSeconds()).padStart(2, '0')} UTC`;
+      document.getElementById(`${elementPrefix}-time`).textContent = timeStr;
+      
+      const statusEl = document.getElementById(`${elementPrefix}-status`);
+      const isOpen = currentHour >= openHour && currentHour < closeHour;
+      
+      if (isOpen) {
+        statusEl.className = 'status open';
+        statusEl.textContent = 'OPEN';
+      } else {
+        statusEl.className = 'status closed';
+        statusEl.textContent = 'CLOSED';
+      }
+    }
+    
+    // Refresh clocks every second
+    setInterval(updateMarketClocks, 1000);
+    
+    // Generate live analysis trigger
+    async function generateLiveReport() {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'flex';
+      
+      try {
+        const response = await fetch('/api/generate-gold-report', { method: 'POST' });
+        const data = await response.json();
+        if (data.success) {
+          loadReportData(data.report);
+        } else {
+          alert('Report generation failed: ' + data.error);
+        }
+      } catch (err) {
+        alert('Network error: ' + err.message);
+      } finally {
+        overlay.style.display = 'none';
+      }
+    }
+
+    // Load generated report values onto the dashboard
+    async function loadReportData(report = null) {
+      try {
+        if (!report) {
+          const response = await fetch('/static/gold_report.json');
+          report = await response.json();
+        }
+        
+        // 1. Verdict Card
+        const verdict = report.primary_objective.verdict || 'WAIT';
+        const verdictBadge = document.getElementById('verdict-badge');
+        verdictBadge.textContent = verdict;
+        verdictBadge.className = `badge-large ${verdict.toLowerCase()}`;
+        
+        document.getElementById('success-pct').textContent = `Success Probability: ${report.primary_objective.probability}`;
+        document.getElementById('v-entry').textContent = report.primary_objective.entry !== "N/A" ? `$${report.primary_objective.entry}` : 'N/A';
+        document.getElementById('v-sl').textContent = report.primary_objective.sl !== "N/A" ? `$${report.primary_objective.sl}` : 'N/A';
+        document.getElementById('v-rr').textContent = report.primary_objective.reward_ratio;
+        document.getElementById('v-tp1').textContent = report.primary_objective.tp1 !== "N/A" ? `$${report.primary_objective.tp1}` : 'N/A';
+        document.getElementById('v-tp2').textContent = report.primary_objective.tp2 !== "N/A" ? `$${report.primary_objective.tp2}` : 'N/A';
+        document.getElementById('v-tp3').textContent = report.primary_objective.tp3 !== "N/A" ? `$${report.primary_objective.tp3}` : 'N/A';
+        
+        // 2. Part 1 - Market Structure
+        document.getElementById('ms-d').textContent = report.part_1_market_structure.daily_trend;
+        document.getElementById('ms-4h').textContent = report.part_1_market_structure.trend_4h;
+        document.getElementById('ms-1h').textContent = report.part_1_market_structure.trend_1h;
+        document.getElementById('ms-15m').textContent = report.part_1_market_structure.trend_15m;
+        
+        document.getElementById('ms-highs-lows').textContent = report.part_1_market_structure.highs_lows;
+        document.getElementById('ms-shifts').textContent = report.part_1_market_structure.structure_shifts;
+        document.getElementById('ms-character').textContent = report.part_1_market_structure.character_changes;
+        
+        // 3. Part 2 - Technicals
+        document.getElementById('ta-mas').textContent = report.part_2_technical_analysis.moving_averages;
+        document.getElementById('ta-oscillators').textContent = report.part_2_technical_analysis.oscillators;
+        document.getElementById('ta-bb').textContent = report.part_2_technical_analysis.bollinger_bands;
+        document.getElementById('ta-sr').textContent = report.part_2_technical_analysis.pivots;
+        document.getElementById('ta-fvg').textContent = report.part_2_technical_analysis.fvg_orderblocks;
+        
+        // 4. Part 3 - SMC
+        document.getElementById('sm-liquidity').textContent = report.part_3_smart_money_analysis.liquidity;
+        document.getElementById('sm-flow').textContent = report.part_3_smart_money_analysis.order_flow;
+        document.getElementById('sm-amd').textContent = report.part_3_smart_money_analysis.power_of_three;
+        
+        // 5. Part 4 & 5 - PA & Vol
+        document.getElementById('pa-candlesticks').textContent = report.part_4_price_action.candlestick_patterns;
+        document.getElementById('pa-patterns').textContent = report.part_4_price_action.chart_patterns;
+        document.getElementById('vol-profile').textContent = report.part_5_volume_analysis.volume_profile;
+        document.getElementById('vol-delta').textContent = report.part_5_volume_analysis.buying_selling_pressure;
+        
+        // 6. Part 6 - Macro
+        document.getElementById('fnd-yields').textContent = report.part_6_fundamental_analysis.yields_dxy;
+        document.getElementById('fnd-macro').textContent = report.part_6_fundamental_analysis.macro_summary;
+        document.getElementById('fnd-speeches').textContent = report.part_6_fundamental_analysis.speeches_events;
+        
+        // 7. Part 7 & 8 - Sentiment
+        document.getElementById('sent-cot').textContent = report.part_7_market_sentiment.sentiment_summary;
+        document.getElementById('sent-fear').textContent = report.part_7_market_sentiment.fear_greed;
+        document.getElementById('intermarket-corr').textContent = report.part_8_intermarket_analysis.correlations;
+        
+        // 8. Part 9 - Options
+        document.getElementById('opt-exposure').textContent = report.part_9_options_futures.comex_options;
+        
+        // 9. Part 10, 11, 13 - Risk & Invalidation
+        document.getElementById('risk-vol').textContent = report.part_10_risk_analysis.volatility;
+        document.getElementById('risk-invalidation').textContent = `$${report.part_13_invalidation.price}`;
+        document.getElementById('risk-news').textContent = report.part_13_invalidation.news_event;
+        document.getElementById('exec-sizing').textContent = report.part_11_trade_execution_plan.position_sizing;
+        
+        // 10. Part 12 - Pros vs Cons Lists
+        const prosList = document.getElementById('trade-pros');
+        prosList.innerHTML = '';
+        report.part_12_reasons_for_trade.pros.forEach(pro => {
+          const li = document.createElement('li');
+          li.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${pro}`;
+          prosList.appendChild(li);
+        });
+        
+        const consList = document.getElementById('trade-cons');
+        consList.innerHTML = '';
+        report.part_12_reasons_for_trade.cons.forEach(con => {
+          const li = document.createElement('li');
+          li.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${con}`;
+          consList.appendChild(li);
+        });
+        
+      } catch (err) {
+        console.error('Error rendering report:', err);
+      }
+    }
+    
+    // Initial Load
+    updateMarketClocks();
+    loadReportData();
+  </script>
+</body>
+</html>
