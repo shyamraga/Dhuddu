@@ -1170,8 +1170,8 @@ tr:last-child td {
 }
 
 /* ==========================================================================
-   Mobile & Tablet Responsive System (ui-ux-pro-max compliant)
-   Breakpoints: 1024px (tablet), 768px (mobile), 480px (small mobile)
+   Mobile & Tablet Responsive System
+   Coinbase-style slide-in sidebar panel with hamburger toggle
    ========================================================================== */
 
 /* --- Mobile Top Bar (hidden on desktop) --- */
@@ -1202,6 +1202,8 @@ tr:last-child td {
   color: #fff;
   letter-spacing: -0.3px;
 }
+
+/* Hamburger button in top bar */
 .sidebar-toggle-btn {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1224,75 +1226,33 @@ tr:last-child td {
   transform: scale(0.92);
 }
 
-/* --- Bottom Tab Navigation Bar (hidden on desktop) --- */
-.bottom-tab-bar {
+/* X close button inside sidebar (hidden on desktop) */
+.sidebar-close-btn {
   display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  background: rgba(3, 7, 18, 0.95);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  z-index: 999;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  justify-content: space-around;
-  align-items: stretch;
-}
-.bottom-tab {
-  display: flex;
-  flex-direction: column;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  gap: 4px;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
+  border-radius: 12px;
+  transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
-  position: relative;
-  padding: 8px 4px;
-  min-height: 44px;
+  z-index: 10;
 }
-.bottom-tab i {
-  font-size: 18px;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-.bottom-tab span {
-  white-space: nowrap;
-}
-.bottom-tab.active {
+.sidebar-close-btn:active {
+  background: rgba(245, 158, 11, 0.15);
   color: var(--accent-amber);
-}
-.bottom-tab.active i {
-  transform: scale(1.1);
-  text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
-}
-.bottom-tab.active::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  height: 3px;
-  background: var(--accent-amber);
-  border-radius: 0 0 3px 3px;
-}
-.bottom-tab:active {
-  opacity: 0.7;
-  transform: scale(0.92);
+  transform: scale(0.9);
 }
 
-/* --- Sidebar Overlay (drawer backdrop) --- */
+/* --- Sidebar Overlay (dim backdrop when drawer open) --- */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -1329,9 +1289,6 @@ tr:last-child td {
   .mobile-header {
     display: flex;
   }
-  .bottom-tab-bar {
-    display: flex;
-  }
 
   .app-container {
     display: block !important;
@@ -1340,33 +1297,74 @@ tr:last-child td {
     width: 100% !important;
   }
 
-  /* Sidebar as Slide-in Drawer */
+  /* Show close button in sidebar */
+  .sidebar-close-btn {
+    display: flex;
+  }
+
+  /* Sidebar: Coinbase-style wide slide-in panel */
   .sidebar {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     bottom: 0 !important;
-    width: 280px !important;
+    width: 82vw !important;
+    max-width: 360px !important;
     height: 100vh !important;
     height: 100dvh !important;
-    border-radius: 0 16px 16px 0 !important;
+    border-radius: 0 20px 20px 0 !important;
     border-left: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    background: rgba(8, 8, 12, 0.97) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
     transform: translateX(-100%) !important;
     transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
     z-index: 1000 !important;
     overflow-y: auto !important;
     box-shadow: none !important;
+    padding: 24px !important;
+    padding-top: 20px !important;
   }
   .sidebar.open {
     transform: translateX(0) !important;
-    box-shadow: 20px 0 60px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 24px 0 80px rgba(0, 0, 0, 0.6) !important;
   }
 
-  /* Main Content: pad for top bar and bottom tab bar */
+  /* Sidebar brand in drawer mode */
+  .sidebar .brand {
+    margin-bottom: 32px !important;
+    margin-top: 8px !important;
+  }
+
+  /* Nav items: larger, more spacious for touch */
+  .sidebar .nav-item {
+    padding: 16px 18px !important;
+    font-size: 15px !important;
+    border-radius: 14px !important;
+    gap: 16px !important;
+    min-height: 48px !important;
+  }
+  .sidebar .nav-item i {
+    font-size: 18px !important;
+    width: 24px !important;
+  }
+  .sidebar .navigation {
+    gap: 6px !important;
+  }
+
+  /* Sidebar footer */
+  .sidebar .sidebar-footer {
+    margin-top: auto !important;
+    padding-top: 24px !important;
+  }
+
+  /* Main Content: pad for top bar only */
   .main-content {
     margin-top: 56px !important;
     padding: 16px !important;
-    padding-bottom: 80px !important;
+    padding-bottom: 24px !important;
     width: 100% !important;
     max-height: none !important;
     overflow-y: visible !important;
@@ -1387,7 +1385,6 @@ tr:last-child td {
    MOBILE BREAKPOINT (max 768px)
    ================================ */
 @media (max-width: 768px) {
-  /* Stack ALL grids to single column */
   .cols-4, .cols-3, .cols-2 {
     grid-template-columns: 1fr !important;
   }
@@ -1395,12 +1392,16 @@ tr:last-child td {
     grid-column: span 1 !important;
   }
 
-  /* Grid layout gap tightened */
   .grid-layout {
     gap: 12px !important;
   }
 
-  /* Hero section responsive */
+  /* Sidebar takes more width on phones */
+  .sidebar {
+    width: 88vw !important;
+    max-width: none !important;
+  }
+
   .pulse-hero {
     padding: 20px !important;
     margin-bottom: 16px !important;
@@ -1414,7 +1415,6 @@ tr:last-child td {
     line-height: 1.5 !important;
   }
 
-  /* Clock grid single column */
   .clock-grid {
     grid-template-columns: 1fr !important;
     gap: 8px !important;
@@ -1423,7 +1423,6 @@ tr:last-child td {
     padding: 12px 16px !important;
   }
 
-  /* Cards: tighter padding */
   .card {
     border-radius: 12px !important;
   }
@@ -1437,7 +1436,6 @@ tr:last-child td {
     font-size: 14px !important;
   }
 
-  /* Flex containers stacking */
   div[style*="display: flex; gap: 12px;"],
   div[style*="display:flex; gap:12px;"] {
     flex-direction: column !important;
@@ -1445,7 +1443,6 @@ tr:last-child td {
     gap: 8px !important;
   }
 
-  /* Input & select fields: full width, prevent iOS zoom */
   input[type="text"],
   input[type="number"],
   select {
@@ -1454,7 +1451,6 @@ tr:last-child td {
     font-size: 16px !important;
   }
 
-  /* Buttons: full width, touch-friendly height */
   .primary-btn, .action-btn, button[type="submit"] {
     width: 100% !important;
     min-height: 48px !important;
@@ -1463,7 +1459,6 @@ tr:last-child td {
     border-radius: 10px !important;
   }
 
-  /* Tables: horizontal scroll, shrink font */
   table {
     font-size: 12px !important;
   }
@@ -1472,17 +1467,14 @@ tr:last-child td {
     white-space: nowrap !important;
   }
 
-  /* News cards stacking */
   #news-container {
     grid-template-columns: 1fr !important;
   }
 
-  /* Options dashboard */
   #options-dashboard {
     grid-template-columns: 1fr !important;
   }
 
-  /* Content headers */
   .content-header h2 {
     font-size: 20px !important;
     letter-spacing: -0.5px !important;
@@ -1491,7 +1483,6 @@ tr:last-child td {
     font-size: 12px !important;
   }
 
-  /* MF dashboard */
   #mf-dashboard {
     grid-template-columns: 1fr !important;
   }
@@ -1503,7 +1494,7 @@ tr:last-child td {
 @media (max-width: 480px) {
   .main-content {
     padding: 10px !important;
-    padding-bottom: 76px !important;
+    padding-bottom: 16px !important;
   }
 
   .mobile-header {
@@ -1528,40 +1519,21 @@ tr:last-child td {
   .card-body {
     padding: 10px !important;
   }
-
-  .bottom-tab-bar {
-    height: 56px !important;
-  }
-  .bottom-tab i {
-    font-size: 16px !important;
-  }
-  .bottom-tab span {
-    font-size: 9px !important;
-  }
 }
 
 /* ================================
    LANDSCAPE MODE (phones)
    ================================ */
 @media (max-height: 500px) and (orientation: landscape) {
-  .bottom-tab-bar {
-    height: 48px !important;
-  }
-  .bottom-tab {
-    flex-direction: row !important;
-    gap: 6px !important;
-  }
-  .bottom-tab span {
-    font-size: 11px !important;
-  }
   .mobile-header {
     height: 44px !important;
   }
   .main-content {
     margin-top: 44px !important;
-    padding-bottom: 56px !important;
+  }
+  .sidebar {
+    width: 50vw !important;
+    max-width: 320px !important;
   }
 }
-
-
 

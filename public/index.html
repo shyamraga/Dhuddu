@@ -37,6 +37,10 @@
     
     <!-- Sidebar Navigation Capsule -->
     <aside class="sidebar">
+      <!-- Mobile close button -->
+      <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="Close menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
       <div class="brand">
         <i class="fa-solid fa-chart-line brand-icon"></i>
         <div class="brand-text">
@@ -1301,29 +1305,7 @@
     </main>
   </div>
   
-  <!-- Bottom Tab Navigation for Mobile -->
-  <nav class="bottom-tab-bar" id="bottom-tab-bar">
-    <a href="#market-pulse" class="bottom-tab active" data-tab="market-pulse" aria-label="Market Pulse">
-      <i class="fa-solid fa-bolt"></i>
-      <span>Pulse</span>
-    </a>
-    <a href="#scanner" class="bottom-tab" data-tab="scanner" aria-label="Market Scanner">
-      <i class="fa-solid fa-binoculars"></i>
-      <span>Scanner</span>
-    </a>
-    <a href="#deep-analysis" class="bottom-tab" data-tab="deep-analysis" aria-label="Deep Analysis">
-      <i class="fa-solid fa-chart-pie"></i>
-      <span>Analysis</span>
-    </a>
-    <a href="#options-analysis" class="bottom-tab" data-tab="options-analysis" aria-label="Options">
-      <i class="fa-solid fa-sliders"></i>
-      <span>Options</span>
-    </a>
-    <button class="bottom-tab bottom-tab-more" onclick="toggleSidebar()" aria-label="More tools">
-      <i class="fa-solid fa-grip"></i>
-      <span>More</span>
-    </button>
-  </nav>
+
   
   <!-- Core Javascript Logic -->
   <script src="/static/app.js"></script>

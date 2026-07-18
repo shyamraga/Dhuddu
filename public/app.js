@@ -41,25 +41,18 @@ function closeSidebar() {
   if (overlay) overlay.classList.remove('active');
 }
 
-// Unified tab switch function (used by sidebar nav + bottom tab bar)
+// Tab switch function (used by sidebar nav)
 function switchTab(tabId) {
   const navItems = document.querySelectorAll('.nav-item');
   const tabContents = document.querySelectorAll('.tab-content');
-  const bottomTabs = document.querySelectorAll('.bottom-tab[data-tab]');
 
   // Deactivate all
   navItems.forEach(nav => nav.classList.remove('active'));
   tabContents.forEach(tab => tab.classList.remove('active'));
-  bottomTabs.forEach(bt => bt.classList.remove('active'));
 
   // Activate sidebar nav item
   navItems.forEach(nav => {
     if (nav.getAttribute('data-tab') === tabId) nav.classList.add('active');
-  });
-
-  // Activate bottom tab
-  bottomTabs.forEach(bt => {
-    if (bt.getAttribute('data-tab') === tabId) bt.classList.add('active');
   });
 
   // Activate tab content
@@ -75,21 +68,11 @@ function switchTab(tabId) {
 
 // 1. Navigation Controller
 function initNavigation() {
-  // Sidebar nav items
   const navItems = document.querySelectorAll('.nav-item');
   navItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
       switchTab(item.getAttribute('data-tab'));
-    });
-  });
-
-  // Bottom tab bar items
-  const bottomTabs = document.querySelectorAll('.bottom-tab[data-tab]');
-  bottomTabs.forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      switchTab(tab.getAttribute('data-tab'));
     });
   });
 }
