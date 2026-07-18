@@ -1735,6 +1735,7 @@ async function sendToTelegram(btnElement) {
 // 8. Tab: Mutual Funds Dashboard
 let mfChartInstance = null;
 let currentMfNavData = [];
+let currentMfFundName = '';
 
 async function loadTop10Navs() {
   const codes = [151165, 120586, 118989, 118834, 118778, 150677, 122639, 120334, 119609, 119091];
@@ -1847,9 +1848,14 @@ async function loadMutualFundDetails(schemeCode) {
     document.getElementById('mf-dashboard').style.display = 'grid';
 
     // Update Info Card
-    document.getElementById('mf-info-name').innerText = data.scheme_name || 'Mutual Fund Scheme';
+    currentMfFundName = data.scheme_name || 'Mutual Fund Scheme';
+    document.getElementById('mf-info-name').innerText = currentMfFundName;
     document.getElementById('mf-info-code').innerText = data.scheme_code || schemeCode;
     document.getElementById('mf-info-isin').innerText = data.isin || 'N/A';
+
+    // Hide previous analysis when switching funds
+    const analysisCard = document.getElementById('mf-analysis-card');
+    if (analysisCard) analysisCard.style.display = 'none';
 
     const latestVal = currentMfNavData[currentMfNavData.length - 1];
     document.getElementById('mf-info-nav').innerText = `₹${latestVal.nav.toFixed(4)}`;
@@ -2108,3 +2114,92 @@ function backtestSIP() {
   cagrElement.style.fontWeight = '700';
 }
 
+// Analyse Mutual Fund (web search + AI analysis)
+async function analyseMutualFund() {
+  if (!currentMfFundName || currentMfNavData.length === 0) {
+    alert('Please select a mutual fund first.');
+    return;
+  }
+
+  const btn = document.getElementById('mf-analyse-btn');
+  const analysisCard = document.getElementById('mf-analysis-card');
+  const analysisContent = document.getElementById('mf-analysis-content');
+
+  // Show loading state
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analysing... (searching web)';
+  analysisCard.style.display = 'block';
+  analysisContent.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 16px;">
+      <i class="fa-solid fa-globe fa-spin" style="font-size: 32px; color: var(--accent-amber);"></i>
+      <p style="color: var(--text-secondary); font-size: 13px; text-align: center;">
+        Searching the web for <strong style="color: #fff;">${currentMfFundName}</strong> and generating AI analysis...<br>
+        <span style="font-size: 11px; color: var(--text-muted);">This may take 10-15 seconds</span>
+      </p>
+    </div>`;
+
+  // Scroll the analysis card into view
+  analysisCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // Collect fund data to send to backend
+  const latest = currentMfNavData[currentMfNavData.length - 1];
+  const fundData = {
+    fund_name: currentMfFundName,
+    scheme_code: document.getElementById('mf-info-code')?.innerText || '',
+    isin: document.getElementById('mf-info-isin')?.innerText || '',
+    latest_nav: latest.nav,
+    latest_nav_date: latest.dateStr,
+    data_points: currentMfNavData.length,
+    history_start: currentMfNavData[0]?.dateStr || '',
+    volatility: document.getElementById('mf-risk-vol')?.innerText || '',
+    max_drawdown: document.getElementById('mf-risk-mdd')?.innerText || '',
+    sharpe_ratio: document.getElementById('mf-risk-sharpe')?.innerText || '',
+    sortino_ratio: document.getElementById('mf-risk-sortino')?.innerText || ''
+  };
+
+  // Collect trailing returns from the table
+  const returnsRows = document.querySelectorAll('#mf-returns-table-body tr');
+  const trailingReturns = {};
+  returnsRows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    if (cells.length >= 3) {
+      trailingReturns[cells[0].innerText] = {
+        total_return: cells[1].innerText,
+        cagr: cells[2].innerText
+      };
+    }
+  });
+  fundData.trailing_returns = trailingReturns;
+
+  try {
+    const response = await fetch('/api/mf-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fund_name: currentMfFundName,
+        fund_data: fundData
+      })
+    });
+
+    const result = await response.json();
+    if (result.success && result.html) {
+      analysisContent.innerHTML = result.html;
+    } else {
+      analysisContent.innerHTML = `
+        <div style="color: var(--accent-red); padding: 20px; text-align: center;">
+          <i class="fa-solid fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 8px;"></i>
+          <p>Analysis failed: ${result.error || 'Unknown error'}</p>
+        </div>`;
+    }
+  } catch (err) {
+    console.error('MF Analysis error:', err);
+    analysisContent.innerHTML = `
+      <div style="color: var(--accent-red); padding: 20px; text-align: center;">
+        <i class="fa-solid fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 8px;"></i>
+        <p>Failed to connect: ${err.message}</p>
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> Analyse This Fund';
+  }
+}

@@ -530,6 +530,125 @@ async def generate_scalping_scan_endpoint(request):
     except Exception as e:
         return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
+async def mf_analysis_endpoint(request):
+    """Analyse a mutual fund by searching the web via Tavily and synthesising with Gemini."""
+    try:
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        if not gemini_api_key:
+            return JSONResponse({"error": "Gemini API key is not configured"}, status_code=400)
+
+        tavily_api_key = "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"
+
+        body = await request.json()
+        fund_name = body.get("fund_name", "")
+        fund_data = body.get("fund_data", {})
+
+        if not fund_name:
+            return JSONResponse({"error": "fund_name is required"}, status_code=400)
+
+        # Step 1: Tavily web search for the mutual fund
+        def tavily_search():
+            search_query = f"{fund_name} mutual fund India analysis review performance pros cons 2024 2025"
+            tavily_url = "https://api.tavily.com/search"
+            payload = json.dumps({
+                "api_key": tavily_api_key,
+                "query": search_query,
+                "search_depth": "advanced",
+                "max_results": 8,
+                "include_answer": True,
+                "include_raw_content": False
+            }).encode("utf-8")
+            req = urllib.request.Request(tavily_url, data=payload, headers={"Content-Type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=20) as resp:
+                    return json.loads(resp.read().decode("utf-8"))
+            except Exception as e:
+                print(f"Tavily search error: {e}")
+                return {"answer": "", "results": []}
+
+        tavily_result = await asyncio.to_thread(tavily_search)
+
+        # Build context from Tavily results
+        web_context = ""
+        if tavily_result.get("answer"):
+            web_context += f"Tavily Answer Summary:\n{tavily_result['answer']}\n\n"
+        for i, r in enumerate(tavily_result.get("results", [])[:6], 1):
+            web_context += f"Source {i}: {r.get('title', '')}\n{r.get('content', '')}\nURL: {r.get('url', '')}\n\n"
+
+        # Step 2: Send to Gemini for analysis
+        prompt = f"""You are an expert Indian mutual fund analyst and certified financial planner.
+
+Analyse the mutual fund: **{fund_name}**
+
+Here is quantitative data from the fund's NAV history:
+{json.dumps(fund_data, indent=2)}
+
+Here is recent web research about this fund:
+{web_context}
+
+Generate a crisp, professional analysis in styled HTML (for a dark-mode dashboard). Structure it as:
+
+1. **Fund Overview** — What the fund does, its category, AMC, and investment objective (2-3 lines max)
+2. **Performance Snapshot** — Recent returns vs category/benchmark (use the NAV data provided)
+3. **Pros** — 4-5 clear bullet points on why this fund is good
+4. **Cons** — 3-4 clear bullet points on risks/downsides
+5. **Who Should Invest** — Ideal investor profile and suggested investment horizon
+6. **Verdict** — One-line final recommendation with a rating out of 5 stars
+
+CRITICAL STYLING RULES:
+- Dark mode only. Use transparent/dark backgrounds.
+- Use colors: green (#10b981) for pros, red (#ef4444) for cons, amber (#f59e0b) for highlights, cyan (#06b6d4) for data.
+- Text colors: #f8fafc for headings, #cbd5e1 for body text.
+- Use <h4> for section headers, <ul> for lists. Use ✅ for pros and ⚠️ for cons as bullet prefixes.
+- Keep it crisp — no more than 400 words total.
+- Do NOT wrap in markdown code blocks. Return raw HTML only.
+- Add source attribution at the bottom in small muted text citing the web sources used.
+"""
+
+        gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"
+        req_data = json.dumps({
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.3}
+        }).encode("utf-8")
+        req = urllib.request.Request(gemini_url, data=req_data, headers={"Content-Type": "application/json"})
+
+        def call_gemini():
+            import time
+            last_err = None
+            for attempt in range(3):
+                try:
+                    with urllib.request.urlopen(req, timeout=45) as response:
+                        return json.loads(response.read().decode("utf-8"))
+                except urllib.error.HTTPError as he:
+                    last_err = he
+                    print(f"Gemini MF analysis attempt {attempt + 1} failed: {he.code}")
+                    if he.code in (503, 429, 500, 502, 504):
+                        time.sleep(1.5 * (attempt + 1))
+                        continue
+                    raise he
+                except Exception as e:
+                    last_err = e
+                    time.sleep(1.5 * (attempt + 1))
+                    continue
+            raise last_err
+
+        result = await asyncio.to_thread(call_gemini)
+        generated_html = result["candidates"][0]["content"]["parts"][0]["text"]
+
+        # Strip markdown wrappers if present
+        if generated_html.startswith("```html"):
+            generated_html = generated_html[7:]
+        if generated_html.startswith("```"):
+            generated_html = generated_html[3:]
+        if generated_html.endswith("```"):
+            generated_html = generated_html[:-3]
+
+        return JSONResponse({"success": True, "html": generated_html.strip()})
+
+    except Exception as e:
+        print(f"MF Analysis error: {e}")
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
 # Create Starlette app
 routes = [
     Route("/", index_endpoint),
@@ -541,6 +660,7 @@ routes = [
     Route("/api/send-telegram", send_telegram_endpoint, methods=["POST"]),
     Route("/api/market-news", market_news_endpoint, methods=["GET", "POST"]),
     Route("/api/gemini-analysis", gemini_analysis_endpoint, methods=["POST"]),
+    Route("/api/mf-analysis", mf_analysis_endpoint, methods=["POST"]),
     Mount("/static", app=StaticFiles(directory=os.path.join(BASE_DIR, "public")), name="static")
 ]
 
