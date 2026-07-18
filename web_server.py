@@ -586,23 +586,66 @@ Here is quantitative data from the fund's NAV history:
 Here is recent web research about this fund:
 {web_context}
 
-Generate a crisp, professional analysis in styled HTML (for a dark-mode dashboard). Structure it as:
+Generate a BEAUTIFULLY FORMATTED analysis using this EXACT HTML template structure. Fill in the content for each section. Keep each section crisp (2-3 sentences max for paragraphs, 4-5 bullet points for lists).
 
-1. **Fund Overview** — What the fund does, its category, AMC, and investment objective (2-3 lines max)
-2. **Performance Snapshot** — Recent returns vs category/benchmark (use the NAV data provided)
-3. **Pros** — 4-5 clear bullet points on why this fund is good
-4. **Cons** — 3-4 clear bullet points on risks/downsides
-5. **Who Should Invest** — Ideal investor profile and suggested investment horizon
-6. **Verdict** — One-line final recommendation with a rating out of 5 stars
+MANDATORY HTML STRUCTURE (copy this exactly, fill in the [...] placeholders):
 
-CRITICAL STYLING RULES:
-- Dark mode only. Use transparent/dark backgrounds.
-- Use colors: green (#10b981) for pros, red (#ef4444) for cons, amber (#f59e0b) for highlights, cyan (#06b6d4) for data.
-- Text colors: #f8fafc for headings, #cbd5e1 for body text.
-- Use <h4> for section headers, <ul> for lists. Use ✅ for pros and ⚠️ for cons as bullet prefixes.
-- Keep it crisp — no more than 400 words total.
-- Do NOT wrap in markdown code blocks. Return raw HTML only.
-- Add source attribution at the bottom in small muted text citing the web sources used.
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+  <div style="background: rgba(6, 182, 212, 0.06); border: 1px solid rgba(6, 182, 212, 0.15); border-radius: 12px; padding: 18px 20px;">
+    <div style="font-size: 13px; font-weight: 800; color: #06b6d4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">📋 Fund Overview</div>
+    <p style="color: #cbd5e1; font-size: 13px; line-height: 1.7; margin: 0;">[2-3 sentence overview of the fund - category, AMC, objective]</p>
+  </div>
+
+  <div style="background: rgba(139, 92, 246, 0.06); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 12px; padding: 18px 20px;">
+    <div style="font-size: 13px; font-weight: 800; color: #a78bfa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">📊 Performance Snapshot</div>
+    <p style="color: #cbd5e1; font-size: 13px; line-height: 1.7; margin: 0;">[2-3 sentences about recent returns, benchmark comparison, and trend using the NAV data provided]</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div style="background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 12px; padding: 18px 20px;">
+      <div style="font-size: 13px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">✅ Pros</div>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="color: #cbd5e1; font-size: 12.5px; line-height: 1.5; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">•</span>[Pro point 1]</li>
+        <li style="color: #cbd5e1; font-size: 12.5px; line-height: 1.5; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">•</span>[Pro point 2]</li>
+        <li style="color: #cbd5e1; font-size: 12.5px; line-height: 1.5; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">•</span>[Pro point 3]</li>
+        <li style="color: #cbd5e1; font-size: 12.5px; line-height: 1.5; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">•</span>[Pro point 4]</li>
+      </ul>
+    </div>
+    <div style="background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15); border-radius: 12px; padding: 18px 20px;">
+      <div style="font-size: 13px; font-weight: 800; color: #ef4444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">⚠️ Cons</div>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+        <li style="color: #cbd5e1; font-size: 12.5px; line-height: 1.5; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #ef4444;">•</span>[Con point 1]</li>
+        <li style="color: #cbd5e1; font-size: 12.5px; line-height: 1.5; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #ef4444;">•</span>[Con point 2]</li>
+        <li style="color: #cbd5e1; font-size: 12.5px; line-height: 1.5; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #ef4444;">•</span>[Con point 3]</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 12px; padding: 18px 20px;">
+    <div style="font-size: 13px; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">👤 Who Should Invest</div>
+    <p style="color: #cbd5e1; font-size: 13px; line-height: 1.7; margin: 0;">[2-3 sentences about ideal investor profile, risk appetite, and recommended investment horizon]</p>
+  </div>
+
+  <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(139, 92, 246, 0.1)); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 12px; padding: 20px 22px; text-align: center;">
+    <div style="font-size: 13px; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;">🏆 Final Verdict</div>
+    <div style="font-size: 20px; margin-bottom: 6px;">[⭐⭐⭐⭐ or similar star rating]</div>
+    <p style="color: #f8fafc; font-size: 14px; font-weight: 600; line-height: 1.6; margin: 0;">[One crisp sentence verdict and recommendation]</p>
+  </div>
+
+  <div style="font-size: 10px; color: #64748b; line-height: 1.5; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+    📎 Sources: [List the web source names/URLs used]
+  </div>
+
+</div>
+
+RULES:
+- Use the EXACT HTML structure above. Do not deviate from the template.
+- Fill in the [...] placeholder brackets with real analysis content.
+- You may add or remove <li> items in Pros/Cons (keep 3-5 each).
+- Do NOT wrap in markdown code blocks. Return ONLY the raw HTML div.
+- Do NOT add any text before or after the HTML.
+- Keep the grid layout for Pros/Cons side by side.
 """
 
         gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"

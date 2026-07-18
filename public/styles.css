@@ -1170,6 +1170,22 @@ tr:last-child td {
 }
 
 /* ==========================================================================
+   Mutual Fund AI Analysis Card
+   ========================================================================== */
+#mf-analysis-content {
+  font-family: var(--font-primary);
+}
+#mf-analysis-content p {
+  margin: 0;
+}
+@media (max-width: 768px) {
+  /* Stack pros/cons grid on mobile */
+  #mf-analysis-content div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================================
    Mobile & Tablet Responsive System
    Coinbase-style slide-in sidebar panel with hamburger toggle
    ========================================================================== */
