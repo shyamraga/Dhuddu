@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScalpingScanner();
   initGoldAnalyst();
   initMutualFunds();
+  initIPOTracker();
 
   // Modern mouse hover spotlight effect for glass cards
   document.addEventListener('mousemove', (e) => {
@@ -2213,6 +2214,23 @@ async function analyseMutualFund() {
 // 9. Tab: IPO Tracker
 // ============================================================
 let currentIPOData = [];
+
+function initIPOTracker() {
+  const refreshBtn = document.getElementById('ipo-refresh-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      loadUpcomingIPOs();
+    });
+  }
+  const analyseBtn = document.getElementById('ipo-analyse-btn');
+  if (analyseBtn) {
+    analyseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      analyseIPOs();
+    });
+  }
+}
 
 async function loadUpcomingIPOs() {
   const loading = document.getElementById('ipo-loading');
