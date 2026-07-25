@@ -1553,3 +1553,20 @@ tr:last-child td {
   }
 }
 
+/* IPO Analyse Button States */
+#ipo-analyse-btn:not(:disabled) {
+  background: linear-gradient(135deg, #8b5cf6, #f59e0b) !important;
+  color: #ffffff !important;
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  opacity: 1 !important;
+  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.5) !important;
+  cursor: pointer !important;
+  transform: translateY(-1px);
+}
+#ipo-analyse-btn:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+
