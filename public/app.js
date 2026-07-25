@@ -64,6 +64,11 @@ function switchTab(tabId) {
 
   // Scroll to top on tab switch (mobile UX)
   window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Auto-load IPO data if opening IPO Tracker tab for the first time
+  if (tabId === 'ipo-tracker' && (typeof currentIPOData === 'undefined' || currentIPOData.length === 0)) {
+    loadUpcomingIPOs();
+  }
 }
 
 // 1. Navigation Controller
@@ -2353,3 +2358,8 @@ async function analyseIPOs() {
     btn.innerHTML = '<i class="fa-solid fa-brain"></i> Analyse & Rank Top 10';
   }
 }
+
+// Bind IPO functions to window explicitly
+window.loadUpcomingIPOs = loadUpcomingIPOs;
+window.analyseIPOs = analyseIPOs;
+
