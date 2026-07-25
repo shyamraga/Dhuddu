@@ -692,6 +692,249 @@ RULES:
         print(f"MF Analysis error: {e}")
         return JSONResponse({"success": False, "error": str(e)}, status_code=500)
 
+async def upcoming_ipos_endpoint(request):
+    """Fetch upcoming IPO data from the web via Tavily."""
+    try:
+        tavily_api_key = "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"
+
+        def tavily_search():
+            search_query = "upcoming IPO India 2025 2026 list open close date price band lot size GMP grey market premium"
+            tavily_url = "https://api.tavily.com/search"
+            payload = json.dumps({
+                "api_key": tavily_api_key,
+                "query": search_query,
+                "search_depth": "advanced",
+                "max_results": 10,
+                "include_answer": True,
+                "include_raw_content": False
+            }).encode("utf-8")
+            req = urllib.request.Request(tavily_url, data=payload, headers={"Content-Type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=25) as resp:
+                    return json.loads(resp.read().decode("utf-8"))
+            except Exception as e:
+                print(f"Tavily IPO search error: {e}")
+                return {"answer": "", "results": []}
+
+        tavily_result = await asyncio.to_thread(tavily_search)
+
+        # Now use Gemini to extract structured IPO data from search results
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        if not gemini_api_key:
+            return JSONResponse({"error": "Gemini API key not configured"}, status_code=400)
+
+        web_context = ""
+        if tavily_result.get("answer"):
+            web_context += f"Summary:\n{tavily_result['answer']}\n\n"
+        for i, r in enumerate(tavily_result.get("results", [])[:8], 1):
+            web_context += f"Source {i}: {r.get('title', '')}\n{r.get('content', '')}\n\n"
+
+        prompt = f"""Extract ALL upcoming/current/recently listed IPOs in India from this web data.
+Return a JSON array. Each IPO object must have these fields:
+- "name": company name
+- "type": "SME" or "Mainboard"  
+- "status": "Open", "Upcoming", "Closing Today", "Listed", or "Closed"
+- "open_date": opening date string or "TBA"
+- "close_date": closing date string or "TBA"
+- "price_band": price range string like "₹100-₹105" or "TBA"
+- "lot_size": number or "TBA"
+- "issue_size": issue size string like "₹500 Cr" or "TBA"
+- "gmp": grey market premium string like "+₹50 (47%)" or "N/A"
+- "listing_date": listing date string or "TBA"
+- "subscription": subscription times like "2.5x" or "N/A"
+- "sector": industry sector or "N/A"
+
+IMPORTANT: Return ONLY valid JSON array. No markdown, no explanation, no wrapping.
+If no IPOs found, return empty array [].
+Sort by: Open first, then Upcoming, then recently Listed/Closed.
+
+Web data:
+{web_context}"""
+
+        gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"
+        req_data = json.dumps({
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.1}
+        }).encode("utf-8")
+        req = urllib.request.Request(gemini_url, data=req_data, headers={"Content-Type": "application/json"})
+
+        def call_gemini():
+            import time
+            for attempt in range(3):
+                try:
+                    with urllib.request.urlopen(req, timeout=40) as response:
+                        return json.loads(response.read().decode("utf-8"))
+                except Exception as e:
+                    print(f"Gemini IPO extract attempt {attempt+1}: {e}")
+                    time.sleep(1.5 * (attempt + 1))
+            return None
+
+        result = await asyncio.to_thread(call_gemini)
+        if not result:
+            return JSONResponse({"success": False, "error": "Failed to process IPO data"}, status_code=500)
+
+        text = result["candidates"][0]["content"]["parts"][0]["text"].strip()
+        # Strip markdown wrappers
+        if text.startswith("```json"):
+            text = text[7:]
+        if text.startswith("```"):
+            text = text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+        
+        ipos = json.loads(text.strip())
+        return JSONResponse({"success": True, "ipos": ipos})
+
+    except Exception as e:
+        print(f"Upcoming IPOs error: {e}")
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
+
+async def ipo_analysis_endpoint(request):
+    """Analyse IPOs and rank Top 10 best to invest using Tavily + Gemini."""
+    try:
+        gemini_api_key = os.environ.get("GEMINI_API_KEY")
+        if not gemini_api_key:
+            return JSONResponse({"error": "Gemini API key not configured"}, status_code=400)
+
+        tavily_api_key = "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"
+
+        body = await request.json()
+        ipos = body.get("ipos", [])
+
+        # Get IPO names for deeper research
+        ipo_names = [ipo.get("name", "") for ipo in ipos[:15] if ipo.get("name")]
+        search_query = f"IPO analysis review India 2025 2026 {' '.join(ipo_names[:8])} investment recommendation subscribe"
+
+        def tavily_search():
+            tavily_url = "https://api.tavily.com/search"
+            payload = json.dumps({
+                "api_key": tavily_api_key,
+                "query": search_query,
+                "search_depth": "advanced",
+                "max_results": 10,
+                "include_answer": True,
+                "include_raw_content": False
+            }).encode("utf-8")
+            req = urllib.request.Request(tavily_url, data=payload, headers={"Content-Type": "application/json"})
+            try:
+                with urllib.request.urlopen(req, timeout=25) as resp:
+                    return json.loads(resp.read().decode("utf-8"))
+            except Exception as e:
+                print(f"Tavily IPO analysis search error: {e}")
+                return {"answer": "", "results": []}
+
+        tavily_result = await asyncio.to_thread(tavily_search)
+
+        web_context = ""
+        if tavily_result.get("answer"):
+            web_context += f"Research Summary:\n{tavily_result['answer']}\n\n"
+        for i, r in enumerate(tavily_result.get("results", [])[:8], 1):
+            web_context += f"Source {i}: {r.get('title', '')}\n{r.get('content', '')}\nURL: {r.get('url', '')}\n\n"
+
+        prompt = f"""You are an expert Indian stock market IPO analyst.
+
+Here are the current/upcoming IPOs in India:
+{json.dumps(ipos, indent=2)}
+
+Here is additional web research about these IPOs:
+{web_context}
+
+Generate a BEAUTIFULLY FORMATTED analysis ranking the TOP 10 BEST IPOs to invest in.
+Use this EXACT HTML template structure:
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+  <div style="background: rgba(245, 158, 11, 0.06); border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 12px; padding: 18px 20px;">
+    <div style="font-size: 13px; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">🏆 IPO Investment Rankings</div>
+    <p style="color: #cbd5e1; font-size: 13px; line-height: 1.7; margin: 0;">Brief 2-sentence summary of the current IPO market conditions and your methodology.</p>
+  </div>
+
+  [For each of the top 10 IPOs, generate a card like this:]
+
+  <div style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.12); border-radius: 12px; padding: 18px 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px;">#[RANK]</span>
+        <span style="font-size: 15px; font-weight: 700; color: #f8fafc;">[COMPANY NAME]</span>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <span style="background: rgba(6, 182, 212, 0.1); color: #06b6d4; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">[TYPE: SME/Mainboard]</span>
+        <span style="background: rgba(139, 92, 246, 0.1); color: #a78bfa; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px;">[SECTOR]</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px;">
+      <div><div style="font-size: 9px; color: #64748b; text-transform: uppercase;">Price Band</div><div style="font-size: 12px; font-weight: 700; color: #06b6d4; font-family: monospace;">[PRICE]</div></div>
+      <div><div style="font-size: 9px; color: #64748b; text-transform: uppercase;">GMP</div><div style="font-size: 12px; font-weight: 700; color: #10b981; font-family: monospace;">[GMP]</div></div>
+      <div><div style="font-size: 9px; color: #64748b; text-transform: uppercase;">Issue Size</div><div style="font-size: 12px; font-weight: 700; color: #f8fafc; font-family: monospace;">[SIZE]</div></div>
+      <div><div style="font-size: 9px; color: #64748b; text-transform: uppercase;">Subscription</div><div style="font-size: 12px; font-weight: 700; color: #f59e0b; font-family: monospace;">[SUB]</div></div>
+    </div>
+    <p style="color: #94a3b8; font-size: 12px; line-height: 1.6; margin: 0;"><strong style="color: #10b981;">Why invest:</strong> [1-2 sentence reason this IPO is worth subscribing to]</p>
+    <div style="display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+      <span style="font-size: 11px; font-weight: 700; color: [#10b981 for Subscribe, #f59e0b for Risky, #ef4444 for Avoid];">Verdict: [SUBSCRIBE / RISKY BET / AVOID]</span>
+      <span style="font-size: 14px;">[⭐⭐⭐⭐⭐ rating]</span>
+    </div>
+  </div>
+
+  [Repeat for all top 10 IPOs, using red-tinted border for lower ranked ones:]
+  [For ranks 8-10, use: background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.12);]
+
+  <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(6, 182, 212, 0.08)); border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 12px; padding: 18px 20px; text-align: center;">
+    <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">⚠️ Disclaimer</div>
+    <p style="color: #64748b; font-size: 11px; line-height: 1.5; margin: 0;">This is AI-generated analysis for educational purposes only. Always do your own research (DYOR) before investing. IPO investments carry market risks.</p>
+  </div>
+
+  <div style="font-size: 10px; color: #64748b; line-height: 1.5; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
+    📎 Sources: [List web sources used]
+  </div>
+
+</div>
+
+RULES:
+- Rank by investment potential (GMP, fundamentals, sector outlook, subscription demand).
+- Use the EXACT HTML structure. Fill in all bracket placeholders.
+- Top 7 cards use green-tinted borders, ranks 8-10 use red-tinted borders.
+- Do NOT wrap in markdown code blocks. Return ONLY the raw HTML.
+- If fewer than 10 IPOs available, rank whatever is available.
+"""
+
+        gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"
+        req_data = json.dumps({
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"temperature": 0.3}
+        }).encode("utf-8")
+        req = urllib.request.Request(gemini_url, data=req_data, headers={"Content-Type": "application/json"})
+
+        def call_gemini():
+            import time
+            for attempt in range(3):
+                try:
+                    with urllib.request.urlopen(req, timeout=60) as response:
+                        return json.loads(response.read().decode("utf-8"))
+                except Exception as e:
+                    print(f"Gemini IPO analysis attempt {attempt+1}: {e}")
+                    time.sleep(1.5 * (attempt + 1))
+            return None
+
+        result = await asyncio.to_thread(call_gemini)
+        if not result:
+            return JSONResponse({"success": False, "error": "Gemini analysis failed"}, status_code=500)
+
+        html = result["candidates"][0]["content"]["parts"][0]["text"].strip()
+        if html.startswith("```html"):
+            html = html[7:]
+        if html.startswith("```"):
+            html = html[3:]
+        if html.endswith("```"):
+            html = html[:-3]
+
+        return JSONResponse({"success": True, "html": html.strip()})
+
+    except Exception as e:
+        print(f"IPO Analysis error: {e}")
+        return JSONResponse({"success": False, "error": str(e)}, status_code=500)
+
+
 # Create Starlette app
 routes = [
     Route("/", index_endpoint),
@@ -704,6 +947,8 @@ routes = [
     Route("/api/market-news", market_news_endpoint, methods=["GET", "POST"]),
     Route("/api/gemini-analysis", gemini_analysis_endpoint, methods=["POST"]),
     Route("/api/mf-analysis", mf_analysis_endpoint, methods=["POST"]),
+    Route("/api/upcoming-ipos", upcoming_ipos_endpoint, methods=["GET"]),
+    Route("/api/ipo-analysis", ipo_analysis_endpoint, methods=["POST"]),
     Mount("/static", app=StaticFiles(directory=os.path.join(BASE_DIR, "public")), name="static")
 ]
 

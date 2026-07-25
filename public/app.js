@@ -2203,3 +2203,153 @@ async function analyseMutualFund() {
     btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> Analyse This Fund';
   }
 }
+
+// ============================================================
+// 9. Tab: IPO Tracker
+// ============================================================
+let currentIPOData = [];
+
+async function loadUpcomingIPOs() {
+  const loading = document.getElementById('ipo-loading');
+  const tableCard = document.getElementById('ipo-table-card');
+  const placeholder = document.getElementById('ipo-placeholder');
+  const refreshBtn = document.getElementById('ipo-refresh-btn');
+  const analyseBtn = document.getElementById('ipo-analyse-btn');
+  const analysisCard = document.getElementById('ipo-analysis-card');
+
+  // Show loading, hide others
+  loading.style.display = 'block';
+  tableCard.style.display = 'none';
+  placeholder.style.display = 'none';
+  if (analysisCard) analysisCard.style.display = 'none';
+  refreshBtn.disabled = true;
+  refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning...';
+
+  try {
+    const response = await fetch('/api/upcoming-ipos');
+    const result = await response.json();
+
+    if (result.success && Array.isArray(result.ipos) && result.ipos.length > 0) {
+      currentIPOData = result.ipos;
+      renderIPOTable(result.ipos);
+      tableCard.style.display = 'block';
+      placeholder.style.display = 'none';
+      analyseBtn.disabled = false;
+      document.getElementById('ipo-count-badge').innerText = `${result.ipos.length} IPOs`;
+    } else {
+      placeholder.style.display = 'block';
+      placeholder.querySelector('p').innerHTML = `<span style="color: var(--accent-red);">No IPO data found. Please try again later.</span>`;
+    }
+  } catch (err) {
+    console.error('IPO load error:', err);
+    placeholder.style.display = 'block';
+    placeholder.querySelector('p').innerHTML = `<span style="color: var(--accent-red);">Failed to load IPO data: ${err.message}</span>`;
+  } finally {
+    loading.style.display = 'none';
+    refreshBtn.disabled = false;
+    refreshBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Refresh IPOs';
+  }
+}
+
+function renderIPOTable(ipos) {
+  const tbody = document.getElementById('ipo-table-body');
+  tbody.innerHTML = '';
+
+  ipos.forEach(ipo => {
+    const row = document.createElement('tr');
+
+    // Status badge color
+    let statusColor = '#94a3b8';
+    let statusBg = 'rgba(148, 163, 184, 0.1)';
+    const status = (ipo.status || '').toLowerCase();
+    if (status.includes('open') || status.includes('closing')) {
+      statusColor = '#10b981'; statusBg = 'rgba(16, 185, 129, 0.12)';
+    } else if (status.includes('upcoming')) {
+      statusColor = '#f59e0b'; statusBg = 'rgba(245, 158, 11, 0.12)';
+    } else if (status.includes('listed')) {
+      statusColor = '#06b6d4'; statusBg = 'rgba(6, 182, 212, 0.12)';
+    } else if (status.includes('closed')) {
+      statusColor = '#ef4444'; statusBg = 'rgba(239, 68, 68, 0.12)';
+    }
+
+    // GMP color
+    const gmp = ipo.gmp || 'N/A';
+    let gmpColor = '#94a3b8';
+    if (gmp.includes('+')) gmpColor = '#10b981';
+    else if (gmp.includes('-')) gmpColor = '#ef4444';
+
+    // Type badge
+    const typeBadge = (ipo.type || '').toLowerCase().includes('sme')
+      ? '<span style="background: rgba(139,92,246,0.12); color: #a78bfa; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">SME</span>'
+      : '<span style="background: rgba(6,182,212,0.12); color: #06b6d4; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;">Mainboard</span>';
+
+    row.innerHTML = `
+      <td style="padding: 10px 14px; font-weight: 600; color: #f8fafc; white-space: nowrap;">${ipo.name || '-'}</td>
+      <td style="padding: 10px 14px;">${typeBadge}</td>
+      <td style="padding: 10px 14px;"><span style="background: ${statusBg}; color: ${statusColor}; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap;">${ipo.status || '-'}</span></td>
+      <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; white-space: nowrap;">${ipo.open_date || '-'}</td>
+      <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; white-space: nowrap;">${ipo.close_date || '-'}</td>
+      <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; color: #06b6d4; font-weight: 600;">${ipo.price_band || '-'}</td>
+      <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; text-align: center;">${ipo.lot_size || '-'}</td>
+      <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 11px;">${ipo.issue_size || '-'}</td>
+      <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; color: ${gmpColor}; font-weight: 700;">${gmp}</td>
+      <td style="padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; color: #f59e0b; font-weight: 600;">${ipo.subscription || '-'}</td>
+      <td style="padding: 10px 14px; font-size: 11px; color: var(--text-secondary); white-space: nowrap;">${ipo.sector || '-'}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+async function analyseIPOs() {
+  if (currentIPOData.length === 0) {
+    alert('Please refresh IPOs first.');
+    return;
+  }
+
+  const btn = document.getElementById('ipo-analyse-btn');
+  const analysisCard = document.getElementById('ipo-analysis-card');
+  const analysisContent = document.getElementById('ipo-analysis-content');
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analysing IPOs...';
+  analysisCard.style.display = 'block';
+  analysisContent.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px; gap: 16px;">
+      <i class="fa-solid fa-brain fa-spin" style="font-size: 36px; color: var(--accent-amber);"></i>
+      <p style="color: var(--text-secondary); font-size: 13px; text-align: center;">
+        Researching ${currentIPOData.length} IPOs on the web and generating AI investment rankings...<br>
+        <span style="font-size: 11px; color: var(--text-muted);">This may take 15-30 seconds</span>
+      </p>
+    </div>`;
+
+  analysisCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const response = await fetch('/api/ipo-analysis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ipos: currentIPOData })
+    });
+
+    const result = await response.json();
+    if (result.success && result.html) {
+      analysisContent.innerHTML = result.html;
+    } else {
+      analysisContent.innerHTML = `
+        <div style="color: var(--accent-red); padding: 20px; text-align: center;">
+          <i class="fa-solid fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 8px;"></i>
+          <p>Analysis failed: ${result.error || 'Unknown error'}</p>
+        </div>`;
+    }
+  } catch (err) {
+    console.error('IPO Analysis error:', err);
+    analysisContent.innerHTML = `
+      <div style="color: var(--accent-red); padding: 20px; text-align: center;">
+        <i class="fa-solid fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 8px;"></i>
+        <p>Failed to connect: ${err.message}</p>
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-brain"></i> Analyse & Rank Top 10';
+  }
+}

@@ -78,6 +78,10 @@
           <i class="fa-solid fa-piggy-bank"></i>
           <span>Mutual Funds</span>
         </a>
+        <a href="#ipo-tracker" class="nav-item" data-tab="ipo-tracker">
+          <i class="fa-solid fa-rocket"></i>
+          <span>IPO Tracker</span>
+        </a>
       </nav>
       
       <div class="sidebar-footer">
@@ -1315,6 +1319,81 @@
             <div class="card-body" id="mf-analysis-content" style="padding: 20px; min-height: 100px;">
               <!-- Analysis populated via JS -->
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 8: IPO Tracker -->
+      <section id="ipo-tracker" class="tab-content">
+        <header class="gold-section-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 24px;">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <h2>🚀 IPO Tracker</h2>
+            <span style="font-size:12px; color:var(--text-secondary);">Live upcoming & current IPOs in India with AI-powered analysis</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap: wrap;">
+            <button class="primary-btn" id="ipo-refresh-btn" onclick="loadUpcomingIPOs()" style="gap: 8px;">
+              <i class="fa-solid fa-arrows-rotate"></i> Refresh IPOs
+            </button>
+            <button class="primary-btn" id="ipo-analyse-btn" onclick="analyseIPOs()" style="gap: 8px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(245, 158, 11, 0.3)); border-color: rgba(139, 92, 246, 0.4);" disabled>
+              <i class="fa-solid fa-brain"></i> Analyse & Rank Top 10
+            </button>
+          </div>
+        </header>
+
+        <!-- IPO Loading Overlay -->
+        <div id="ipo-loading" style="display: none; text-align: center; padding: 60px 20px;">
+          <i class="fa-solid fa-satellite-dish fa-spin" style="font-size: 40px; color: var(--accent-amber); margin-bottom: 16px;"></i>
+          <h3 style="font-size: 16px; color: #fff; margin-bottom: 8px;">Scanning IPO Market...</h3>
+          <p style="font-size: 12px; color: var(--text-secondary);">Searching the web for latest IPO data and processing with AI</p>
+        </div>
+
+        <!-- IPO Table -->
+        <div class="card glass-card" id="ipo-table-card" style="display: none; margin-bottom: 24px;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3><i class="fa-solid fa-list-check" style="color: var(--accent-cyan);"></i> Upcoming & Current IPOs</h3>
+            <span id="ipo-count-badge" style="font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 12px;">0 IPOs</span>
+          </div>
+          <div class="card-body" style="padding: 0; overflow-x: auto;">
+            <table class="data-table" style="font-size: 12px; width: 100%;">
+              <thead>
+                <tr>
+                  <th style="padding: 12px 14px;">Company</th>
+                  <th style="padding: 12px 14px;">Type</th>
+                  <th style="padding: 12px 14px;">Status</th>
+                  <th style="padding: 12px 14px;">Open Date</th>
+                  <th style="padding: 12px 14px;">Close Date</th>
+                  <th style="padding: 12px 14px;">Price Band</th>
+                  <th style="padding: 12px 14px;">Lot Size</th>
+                  <th style="padding: 12px 14px;">Issue Size</th>
+                  <th style="padding: 12px 14px;">GMP</th>
+                  <th style="padding: 12px 14px;">Subscription</th>
+                  <th style="padding: 12px 14px;">Sector</th>
+                </tr>
+              </thead>
+              <tbody id="ipo-table-body">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Placeholder when no data -->
+        <div id="ipo-placeholder" class="card glass-card" style="text-align: center; padding: 80px 30px;">
+          <i class="fa-solid fa-rocket" style="font-size: 48px; color: var(--accent-amber); margin-bottom: 20px; opacity: 0.5;"></i>
+          <h3 style="font-size: 18px; color: #fff; margin-bottom: 8px;">IPO Tracker</h3>
+          <p style="font-size: 13px; color: var(--text-secondary); max-width: 450px; margin: 0 auto; line-height: 1.6;">
+            Click <strong>Refresh IPOs</strong> to scan the web for all upcoming, open, and recently listed IPOs in India. Then use <strong>Analyse & Rank Top 10</strong> to get AI-powered investment recommendations.
+          </p>
+        </div>
+
+        <!-- AI Analysis Results Card -->
+        <div class="card glass-card" id="ipo-analysis-card" style="display: none;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3><i class="fa-solid fa-brain" style="color: var(--accent-amber);"></i> AI IPO Analysis — Top 10 Picks</h3>
+            <span style="font-size: 10px; color: var(--text-muted); font-weight: 500;">Powered by Tavily + Gemini</span>
+          </div>
+          <div class="card-body" id="ipo-analysis-content" style="padding: 20px; min-height: 100px;">
+            <!-- Analysis populated via JS -->
           </div>
         </div>
       </section>
